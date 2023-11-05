@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MentalTest.Views.NewTestSelectionPage"
+             BackgroundColor="#FAFAFA">
+    <ContentPage.Content>
+        <RelativeLayout>
+            <Label Text="Category"
+                   FontFamily="Montserrat"
+                   FontAttributes="Bold"
+                   FontSize="24"
+                   TextColor="#394758"
+                   RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.05}"
+                   RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.05}" />
+            <ListView ItemsSource="{Binding TestTypes}"
+                      SeparatorVisibility="None"
+                      RowHeight="80"
+                      BackgroundColor="Transparent"
+                      RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}"
+                      RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.15}"
+                      ItemTapped="OnItemTapped">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Frame BorderColor="#D5D5D5"
+                                   CornerRadius="12"
+                                   Padding="15,20"
+                                   Margin="20,5">
+                                <StackLayout Orientation="Horizontal" VerticalOptions="Center" Spacing="0">
+                                    <Label Text="{Binding Name}"
+                                         FontFamily="Montserrat"
+                                         FontSize="20"
+                                         TextColor="#394758"
+                                         VerticalTextAlignment="Center"
+                                         HorizontalOptions="StartAndExpand"/>
+                                    <Label Text="{Binding TestCount}"
+                                        FontFamily="Montserrat"
+                                        FontSize="16"
+                                        TextColor="#394758"
+                                        VerticalTextAlignment="Center"
+                                        HorizontalOptions="End"
+                                        Margin="20,0,0,0"/>
+                                </StackLayout>
+                            </Frame>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </RelativeLayout>
+    </ContentPage.Content>
+</ContentPage>
