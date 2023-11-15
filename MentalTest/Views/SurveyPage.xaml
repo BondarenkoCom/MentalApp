@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MentalTest.Views.SurveyPage"
+             Title="Survey Page">
+
+    <StackLayout Padding="20">
+        <Label Text="{Binding Question}" 
+               FontSize="Large" 
+               HorizontalOptions="Center" 
+               Margin="0,20,0,20"/>
+
+        <StackLayout>
+            <Button Text="{Binding AnswerFirst}" 
+                    Command="{Binding AnswerCommand}" 
+                    CommandParameter="{Binding AnswerFirst}" 
+                    Margin="0,10"/>
+            <Button Text="{Binding AnswerSecond}" 
+                    Command="{Binding AnswerCommand}" 
+                    CommandParameter="{Binding AnswerSecond}" 
+                    Margin="0,10"/>
+            <Button Text="{Binding AnswerThird}" 
+                    Command="{Binding AnswerCommand}" 
+                    CommandParameter="{Binding AnswerThird}" 
+                    Margin="0,10"/>
+            <Button Text="{Binding AnswerFourth}" 
+                    Command="{Binding AnswerCommand}" 
+                    CommandParameter="{Binding AnswerFourth}" 
+                    Margin="0,10"/>
+        </StackLayout>
+
+        <Button Text="CONTINUE" 
+                Command="{Binding ContinueCommand}" 
+                Margin="0,30" 
+                HorizontalOptions="FillAndExpand"/>
+    </StackLayout>
+
+</ContentPage>

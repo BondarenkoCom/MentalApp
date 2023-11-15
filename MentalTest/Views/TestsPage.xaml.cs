@@ -15,6 +15,7 @@ namespace MentalTest.Views
     {
         public TestsPage(string categoryName)
         {
+
             Console.WriteLine("TestsPage constructor started."); // Beginning of constructor
 
             InitializeComponent();
@@ -30,6 +31,17 @@ namespace MentalTest.Views
             BindingContext = viewModel;
 
             Console.WriteLine("TestsPage constructor completed."); // End of constructor
+        }
+
+        private void ListView_OnItemSelected(object sender, SelectedItemChangedEventArgs e)
+        {
+            if (e.SelectedItem != null)
+            {
+                var viewModel = BindingContext as TestsPageViewModel;
+                viewModel?.ItemTappedCommand.Execute(e.SelectedItem);
+                // Очищаем выбор, чтобы элемент не оставался выделенным
+                ((ListView)sender).SelectedItem = null;
+            }
         }
     }
 }

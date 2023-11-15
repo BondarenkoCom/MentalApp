@@ -5,6 +5,7 @@
              BackgroundColor="#FAFAFA">
     <ContentPage.Content>
         <ListView ItemsSource="{Binding TestItems}"
+                  ItemSelected="ListView_OnItemSelected"
                   SeparatorVisibility="None"
                   RowHeight="180"
                   BackgroundColor="Transparent">
@@ -16,12 +17,10 @@
                                Padding="0"
                                Margin="20,5">
                             <Grid BackgroundColor="White">
-                                <!-- Фон синий сверху -->
                                 <BoxView Color="LightSkyBlue"
                                          VerticalOptions="Start"
                                          HeightRequest="110"
                                          Grid.RowSpan="2"/>
-                                <!-- Верхнее описание -->
                                 <Label Text="{Binding Description}" 
                                        FontSize="16" 
                                        Margin="20,10" 
@@ -29,13 +28,11 @@
                                        MaxLines="4"
                                        LineBreakMode="TailTruncation" 
                                        Grid.Row="0"/>
-                                <!-- Черная линия посередине -->
                                 <BoxView Color="Black"
                                          VerticalOptions="Center"
                                          HorizontalOptions="FillAndExpand"
                                          HeightRequest="2"
                                          Grid.RowSpan="2"/>
-                                <!-- Название теста -->
                                 <Label Text="{Binding Title}" 
                                          FontSize="20" 
                                          FontAttributes="Bold" 
