@@ -1,12 +1,12 @@
 ﻿using System.Collections.ObjectModel;
 using Xamarin.Forms;
 using System.ComponentModel;
+using System;
 
 namespace MentalTest.ViewModels
 {
     public class SurveyViewModel : INotifyPropertyChanged
     {
-
         public bool IsFirstAnswerSelected => SelectedAnswer == AnswerFirst;
         public bool IsSecondAnswerSelected => SelectedAnswer == AnswerSecond;
         public bool IsThirdAnswerSelected => SelectedAnswer == AnswerThird;
@@ -17,6 +17,8 @@ namespace MentalTest.ViewModels
         public Command ContinueCommand { get; set; }
         public int CurrentQuestionIndex { get; set; }
         public Question CurrentQuestion => Questions.Count > CurrentQuestionIndex ? Questions[CurrentQuestionIndex] : null;
+
+        public ObservableCollection<string> SelectedAnswers { get; set; } = new ObservableCollection<string>();
 
         public string AnswerFirst => CurrentQuestion?.Answers.Count > 0 ? CurrentQuestion?.Answers[0] : null;
         public string AnswerSecond => CurrentQuestion?.Answers.Count > 1 ? CurrentQuestion?.Answers[1] : null;
@@ -93,12 +95,19 @@ namespace MentalTest.ViewModels
 
         private void OnContinue()
         {
-            // Переход к следующему вопросу
             if (CurrentQuestionIndex < Questions.Count - 1)
             {
                 CurrentQuestionIndex++;
-                SelectedAnswer = null;
+                SelectedAnswer = null; // Сброс выбранного ответа
 
+                // Обновляем UI для нового вопроса и сброса выбранных ответов
+                OnPropertyChanged(nameof(CurrentQuestion));
+                OnPropertyChanged(nameof(AnswerFirst));
+                OnPropertyChanged(nameof(AnswerSecond));
+                OnPropertyChanged(nameof(AnswerThird));
+                OnPropertyChanged(nameof(AnswerFourth));
+
+                // Обновляем UI для булевых свойств, чтобы отменить подсветку кнопок
                 OnPropertyChanged(nameof(IsFirstAnswerSelected));
                 OnPropertyChanged(nameof(IsSecondAnswerSelected));
                 OnPropertyChanged(nameof(IsThirdAnswerSelected));
@@ -107,8 +116,42 @@ namespace MentalTest.ViewModels
             else
             {
                 // Завершаем тест и выводим результаты
+                FinishTest(); // Метод, который необходимо реализовать для обработки конца теста
             }
         }
+
+
+
+        //временные ответы и тд
+        private void FinishTest()
+        {
+            // Здесь код для обработки конца теста и показа результатов
+            // Например, вы можете суммировать результаты и выбрать соответствующий вывод
+            // Это просто пример логики, которую вы можете реализовать
+
+            // Подсчет результатов
+            int scoreDva = 0;
+            int scoreMercy = 0;
+            foreach (var answer in SelectedAnswers)
+            {
+                if (answer == "Dva") scoreDva++;
+                if (answer == "Mercy") scoreMercy++;
+            }
+
+            // Определение итогового результата
+            string finalResult;
+            if (scoreDva > scoreMercy)
+                finalResult = "Вы больше подходите для персонажа Dva.";
+            else if (scoreMercy > scoreDva)
+                finalResult = "Вы больше подходите для персонажа Mercy.";
+            else
+                finalResult = "Вы одинаково хорошо подходите для обоих персонажей.";
+
+            // Показать результаты
+            // Здесь вы можете вызвать метод навигации, чтобы перейти на новую страницу с этими результатами
+            // Например, можно использовать MessagingCenter для отправки сообщения и перехода на страницу результатов
+            MessagingCenter.Send(this, "FinishTest", finalResult);
+        }  
 
         // Не забудьте реализовать OnPropertyChanged для обновления UI при изменении свойств
         protected virtual void OnPropertyChanged(string propertyName)
