@@ -4,8 +4,21 @@
              x:Class="MentalTest.Views.SurveyPage"
              Title="Survey Page">
 
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="DefaultAnswerButtonStyle" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="White"/>
+                <Setter Property="TextColor" Value="Black"/>
+            </Style>
+            <Style x:Key="SelectedAnswerButtonStyle" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="LightBlue"/>
+                <Setter Property="TextColor" Value="White"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
     <StackLayout Padding="20">
-        <Label Text="{Binding Question}" 
+        <Label Text="{Binding CurrentQuestion.QuestionText}" 
                FontSize="Large" 
                HorizontalOptions="Center" 
                Margin="0,20,0,20"/>
@@ -14,19 +27,27 @@
             <Button Text="{Binding AnswerFirst}" 
                     Command="{Binding AnswerCommand}" 
                     CommandParameter="{Binding AnswerFirst}" 
-                    Margin="0,10"/>
+                    Margin="0,10"
+                    BackgroundColor="{Binding IsFirstAnswerSelected, Converter={StaticResource BooleanToColorConverter}}"
+                    TextColor="{Binding IsFirstAnswerSelected, Converter={StaticResource BooleanToTextColorConverter}}"/>
             <Button Text="{Binding AnswerSecond}" 
                     Command="{Binding AnswerCommand}" 
                     CommandParameter="{Binding AnswerSecond}" 
-                    Margin="0,10"/>
+                    Margin="0,10"
+                    BackgroundColor="{Binding IsSecondAnswerSelected, Converter={StaticResource BooleanToColorConverter}}"
+                    TextColor="{Binding IsSecondAnswerSelected, Converter={StaticResource BooleanToTextColorConverter}}"/>
             <Button Text="{Binding AnswerThird}" 
                     Command="{Binding AnswerCommand}" 
                     CommandParameter="{Binding AnswerThird}" 
-                    Margin="0,10"/>
+                    Margin="0,10"
+                    BackgroundColor="{Binding IsThirdAnswerSelected, Converter={StaticResource BooleanToColorConverter}}"
+                    TextColor="{Binding IsThirdAnswerSelected, Converter={StaticResource BooleanToTextColorConverter}}"/>
             <Button Text="{Binding AnswerFourth}" 
                     Command="{Binding AnswerCommand}" 
                     CommandParameter="{Binding AnswerFourth}" 
-                    Margin="0,10"/>
+                    Margin="0,10"
+                    BackgroundColor="{Binding IsFourthAnswerSelected, Converter={StaticResource BooleanToColorConverter}}"
+                    TextColor="{Binding IsFourthAnswerSelected, Converter={StaticResource BooleanToTextColorConverter}}"/>
         </StackLayout>
 
         <Button Text="CONTINUE" 
