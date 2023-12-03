@@ -16,7 +16,9 @@ namespace MentalTest.Views
         {
             InitializeComponent();
             // Устанавливаем ViewModel с данными теста
-            BindingContext = new SurveyViewModel(test);
+            //BindingContext = new SurveyViewModel(test);
+            BindingContext = new SurveyViewModel(test.Id);
+
         }
     }
 }

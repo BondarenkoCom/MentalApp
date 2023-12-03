@@ -60,9 +60,16 @@ namespace MentalTest.ViewModels
             {
                 //new TestItem { Title = "Mutant Workload Assessment", Description = "Analyzes Jean Grey's potential fatigue from her extensive commitments to the X-Men team and her psychic responsibilities.", QuestionsStatus = "2/3 questions", IsStarred = false, Category = "Job" },
                 //new TestItem { Title = "Cybernetic Operative Downtime Analysis", Description = "Evaluates Motoko Kusanagi's need for rest and recuperation from her demanding role in Section 9.", QuestionsStatus = "0/5 questions", IsStarred = false, Category = "Job" },
-                  new TestItem { Title = "How can I choose Dva or Mercy in Overwatch?", Description = "Выберите своего персонажа в Overwatch и узнайте, подходит ли он вам.", QuestionsStatus = "0/5 questions", IsStarred = false, Category = "Job" },
+                  new TestItem {
+                      Id = 11,
+                      Title = "How well do you know Mercy?",
+                      Description = "Test your knowledge and skills about Mercy from Overwatch.",
+                      QuestionsStatus = "0/5 questions",
+                      IsStarred = false,
+                      Category = "Job" },
             };
 
+            /*
             foreach (var newItem in newTestItems)
             {
                 var existingItem = _database.Table<TestItem>().FirstOrDefault(test => test.Title == newItem.Title && test.Category == newItem.Category);
@@ -74,6 +81,21 @@ namespace MentalTest.ViewModels
                 else
                 {
                     Console.WriteLine($"A test with the name '{newItem.Title}' already exists in category '{newItem.Category}', no addition necessary.");
+                }
+            }
+             */
+
+            foreach (var newItem in newTestItems)
+            {
+                var existingItem = _database.Table<TestItem>().FirstOrDefault(test => test.Id == newItem.Id);
+                if (existingItem == null)
+                {
+                    _database.Insert(newItem);
+                    Console.WriteLine($"New test '{newItem.Title}' with Id '{newItem.Id}' added to category '{newItem.Category}'.");
+                }
+                else
+                {
+                    Console.WriteLine($"A test with the Id '{newItem.Id}' already exists in category '{newItem.Category}', no addition necessary.");
                 }
             }
         }
@@ -125,7 +147,7 @@ namespace MentalTest.ViewModels
 
     public class TestItem
     {
-        [PrimaryKey, AutoIncrement]
+        [PrimaryKey]
         public int Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }

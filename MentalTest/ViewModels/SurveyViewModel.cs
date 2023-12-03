@@ -2,11 +2,16 @@
 using Xamarin.Forms;
 using System.ComponentModel;
 using System;
+using System.Collections.Generic;
+using SQLite;
+using System.Linq;
 
 namespace MentalTest.ViewModels
 {
     public class SurveyViewModel : INotifyPropertyChanged
     {
+        private readonly SQLiteConnection _database;
+
         public bool IsFirstAnswerSelected => SelectedAnswer == AnswerFirst;
         public bool IsSecondAnswerSelected => SelectedAnswer == AnswerSecond;
         public bool IsThirdAnswerSelected => SelectedAnswer == AnswerThird;
@@ -20,10 +25,10 @@ namespace MentalTest.ViewModels
 
         public ObservableCollection<string> SelectedAnswers { get; set; } = new ObservableCollection<string>();
 
-        public string AnswerFirst => CurrentQuestion?.Answers.Count > 0 ? CurrentQuestion?.Answers[0] : null;
-        public string AnswerSecond => CurrentQuestion?.Answers.Count > 1 ? CurrentQuestion?.Answers[1] : null;
-        public string AnswerThird => CurrentQuestion?.Answers.Count > 2 ? CurrentQuestion?.Answers[2] : null;
-        public string AnswerFourth => CurrentQuestion?.Answers.Count > 3 ? CurrentQuestion?.Answers[3] : null;
+        public string AnswerFirst => CurrentQuestion?.Answers.Split(';').ElementAtOrDefault(0);
+        public string AnswerSecond => CurrentQuestion?.Answers.Split(';').ElementAtOrDefault(1);
+        public string AnswerThird => CurrentQuestion?.Answers.Split(';').ElementAtOrDefault(2);
+        public string AnswerFourth => CurrentQuestion?.Answers.Split(';').ElementAtOrDefault(3);
 
         private string _selectedAnswer;
         public string SelectedAnswer
@@ -41,15 +46,113 @@ namespace MentalTest.ViewModels
             }
         }
 
-        public SurveyViewModel(TestItem test)
+        //public SurveyViewModel(TestItem test)
+        //{
+        //    Questions = new ObservableCollection<Question>();
+        //    AnswerCommand = new Command<string>(OnAnswerSelected);
+        //    ContinueCommand = new Command(OnContinue);
+        //    LoadQuestions(test);
+        //    CurrentQuestionIndex = 0; // Инициализация текущего индекса вопроса
+        //}
+        public SurveyViewModel(int testId)
         {
             Questions = new ObservableCollection<Question>();
             AnswerCommand = new Command<string>(OnAnswerSelected);
             ContinueCommand = new Command(OnContinue);
-            LoadQuestions(test);
-            CurrentQuestionIndex = 0; // Инициализация текущего индекса вопроса
+            LoadQuestions(testId); // Load questions based on testId
+            CurrentQuestionIndex = 0;
         }
 
+
+        private void LoadQuestions(int testId)
+        {
+            // Проверка существования таблицы Questions и её создание, если необходимо
+            string createTableQuery = @"
+        CREATE TABLE IF NOT EXISTS Questions (
+            Id INTEGER NOT NULL PRIMARY KEY,
+            TestId INTEGER NOT NULL,
+            QuestionText TEXT NOT NULL,
+            Answers TEXT NOT NULL
+        )";
+
+            // надо чинить базу данных
+            _database.Execute(createTableQuery);
+
+            // Проверка наличия вопросов для данного теста
+            var existingQuestions = _database.Table<Question>().Where(q => q.TestId == testId).ToList();
+            if (!existingQuestions.Any())
+            {
+                // Если вопросов ещё нет, добавляем их в базу данных
+                var questionsToInsert = new List<Question>
+        {
+            new Question { Id = 1, TestId = 11, QuestionText = "What is the real name of Mercy?", Answers = "Angela Ziegler;Brigitte Lindholm;Fareeha Amari;Mei-Ling Zhou" },
+            new Question { Id = 2, TestId = 11, QuestionText = "What role does Mercy play in a team composition?", Answers = "Support;Tank;Damage;Flex" },
+            new Question { Id = 3, TestId = 11, QuestionText = "What is Mercy's ultimate ability called?", Answers = "Valkyrie;Resurrect;Guardian Angel;Caduceus" },
+            new Question { Id = 4, TestId = 11, QuestionText = "How does Mercy heal her teammates?", Answers = "Caduceus Staff;Biotic Rifle;Repair Pack;Biotic Orb" },
+            new Question { Id = 5, TestId = 11, QuestionText = "Which of these is not a Mercy skin?", Answers = "Witch;Devil;Archangel;Vampire" }
+        };
+                foreach (var question in questionsToInsert)
+                {
+                    _database.Insert(question);
+                }
+            }
+
+            // Загрузка вопросов из базы данных для текущего теста
+            Questions = new ObservableCollection<Question>(_database.Table<Question>().Where(q => q.TestId == testId).ToList());
+        }
+
+
+        /*
+        private void SeedDatabaseWithQuestionsForTest(int testId)
+        {
+            // Список новых вопросов для теста "How well do you know Mercy?"
+            var newQuestions = new List<Question>
+    {
+        new Question {
+            TestId = testId,
+            QuestionText = "Какое умение Мерси позволяет ей воскрешать павших союзников?",
+            Answers = new ObservableCollection<string> { "Guardian Angel", "Resurrect", "Angelic Descent", "Caduceus Staff" }
+        },
+        new Question {
+            TestId = testId,
+            QuestionText = "Как называется главный лечащий поток Мерси?",
+            Answers = new ObservableCollection<string> { "Healing Stream", "Health Flow", "Caduceus Beam", "Regeneration" }
+        },
+        new Question {
+            TestId = testId,
+            QuestionText = "Какой эффект даёт ультимативная способность Мерси Valkyrie?",
+            Answers = new ObservableCollection<string> { "Увеличенное лечение", "Мгновенное воскрешение", "Бессмертие", "Усиление всех способностей" }
+        },
+        new Question {
+            TestId = testId,
+            QuestionText = "Какую роль играет Мерси в команде Overwatch?",
+            Answers = new ObservableCollection<string> { "Танк", "Поддержка", "Атака", "Оборона" }
+        },
+        new Question {
+            TestId = testId,
+            QuestionText = "Какой пассивный навык позволяет Мерси замедлять своё падение?",
+            Answers = new ObservableCollection<string> { "Hover", "Glide", "Angelic Descent", "Feather Fall" }
+        }
+    };
+
+            // Перебираем вопросы и добавляем их в базу данных
+            foreach (var question in newQuestions)
+            {
+                var existingQuestion = _database.Table<Question>().FirstOrDefault(q => q.TestId == question.TestId && q.QuestionText == question.QuestionText);
+                if (existingQuestion == null)
+                {
+                    _database.Insert(question);
+                    Console.WriteLine($"Вопрос '{question.QuestionText}' добавлен для теста с ID '{question.TestId}'.");
+                }
+                else
+                {
+                    Console.WriteLine($"Вопрос '{question.QuestionText}' уже существует для теста с ID '{question.TestId}'.");
+                }
+            }
+        }
+        */
+
+        /*
         private void LoadQuestions(TestItem test)
         {
             // Добавление вопросов в тест
@@ -79,18 +182,36 @@ namespace MentalTest.ViewModels
                 Answers = new ObservableCollection<string> { "Face them head-on", "Find a way around", "Help others through" }
             });
         }
+        */
 
-        private void OnAnswerSelected(string answer)
-        {
-            SelectedAnswer = answer;
-            // Обновляем UI
-            OnPropertyChanged(nameof(IsFirstAnswerSelected));
-            OnPropertyChanged(nameof(IsSecondAnswerSelected));
-            OnPropertyChanged(nameof(IsThirdAnswerSelected));
-            OnPropertyChanged(nameof(IsFourthAnswerSelected));
-            // Возможно, обновление стилей кнопок здесь не нужно
-            // UpdateAnswerStyles(); // Эту строку можно убрать
-        }
+        //private void LoadQuestions(int testId)
+        //{
+        //    // Здесь код, который извлекает вопросы из базы данных для данного testId
+        //    var questionsFromDb = GetQuestionsFromDatabase(testId); // Это псевдокод
+        //    foreach (var question in questionsFromDb)
+        //    {
+        //        Questions.Add(question);
+        //    }
+        //}
+
+        //private ObservableCollection<Question> GetQuestionsFromDatabase(int testId)
+        //{
+        //    // Здесь код для запроса к базе данных
+        //    // Возвращает список вопросов для данного testId
+        //}
+
+
+        //private void OnAnswerSelected(string answer)
+        //{
+        //    SelectedAnswer = answer;
+        //    // Обновляем UI
+        //    OnPropertyChanged(nameof(IsFirstAnswerSelected));
+        //    OnPropertyChanged(nameof(IsSecondAnswerSelected));
+        //    OnPropertyChanged(nameof(IsThirdAnswerSelected));
+        //    OnPropertyChanged(nameof(IsFourthAnswerSelected));
+        //    // Возможно, обновление стилей кнопок здесь не нужно
+        //    // UpdateAnswerStyles(); // Эту строку можно убрать
+        //}
 
 
         private void OnContinue()
@@ -99,14 +220,14 @@ namespace MentalTest.ViewModels
             {
                 CurrentQuestionIndex++;
                 SelectedAnswer = null; // Сброс выбранного ответа
-
+        
                 // Обновляем UI для нового вопроса и сброса выбранных ответов
                 OnPropertyChanged(nameof(CurrentQuestion));
                 OnPropertyChanged(nameof(AnswerFirst));
                 OnPropertyChanged(nameof(AnswerSecond));
                 OnPropertyChanged(nameof(AnswerThird));
                 OnPropertyChanged(nameof(AnswerFourth));
-
+        
                 // Обновляем UI для булевых свойств, чтобы отменить подсветку кнопок
                 OnPropertyChanged(nameof(IsFirstAnswerSelected));
                 OnPropertyChanged(nameof(IsSecondAnswerSelected));
@@ -151,7 +272,7 @@ namespace MentalTest.ViewModels
             // Здесь вы можете вызвать метод навигации, чтобы перейти на новую страницу с этими результатами
             // Например, можно использовать MessagingCenter для отправки сообщения и перехода на страницу результатов
             MessagingCenter.Send(this, "FinishTest", finalResult);
-        }  
+        }
 
         // Не забудьте реализовать OnPropertyChanged для обновления UI при изменении свойств
         protected virtual void OnPropertyChanged(string propertyName)
@@ -159,12 +280,32 @@ namespace MentalTest.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnAnswerSelected(string answer)
+        {
+            if (!string.IsNullOrEmpty(answer))
+            {
+                SelectedAnswer = answer;
+                OnPropertyChanged(nameof(IsFirstAnswerSelected));
+                OnPropertyChanged(nameof(IsSecondAnswerSelected));
+                OnPropertyChanged(nameof(IsThirdAnswerSelected));
+                OnPropertyChanged(nameof(IsFourthAnswerSelected));
+            }
+        }
     }
 
 
+    // Вспомогательный класс для вопросов
     public class Question
     {
+        [PrimaryKey, NotNull]
+        public int Id { get; set; }
+        [NotNull]
+        public int TestId { get; set; }
+        [NotNull]
         public string QuestionText { get; set; }
-        public ObservableCollection<string> Answers { get; set; }
+        [NotNull]
+        public string Answers { get; set; }
     }
+
 }
