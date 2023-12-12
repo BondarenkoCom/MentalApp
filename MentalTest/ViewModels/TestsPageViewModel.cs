@@ -21,7 +21,6 @@ namespace MentalTest.ViewModels
         public TestsPageViewModel(string categoryName)
         {
             ItemTappedCommand = new Command<TestItem>(async (testItem) => await OnTestItemTapped(testItem));
-
             try
             {
                 var dbName = "MentalTestDB.db";
@@ -52,6 +51,7 @@ namespace MentalTest.ViewModels
                 Console.WriteLine($"Call stack: {ex.StackTrace}");
                 throw;
             }
+            
         }
 
         private void SeedDatabaseWithJobTests()
