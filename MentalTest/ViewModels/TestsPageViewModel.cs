@@ -69,22 +69,6 @@ namespace MentalTest.ViewModels
                       Category = "Job" },
             };
 
-            /*
-            foreach (var newItem in newTestItems)
-            {
-                var existingItem = _database.Table<TestItem>().FirstOrDefault(test => test.Title == newItem.Title && test.Category == newItem.Category);
-                if (existingItem == null)
-                {
-                    _database.Insert(newItem);
-                    Console.WriteLine($"New test '{newItem.Title}' added to category '{newItem.Category}'.");
-                }
-                else
-                {
-                    Console.WriteLine($"A test with the name '{newItem.Title}' already exists in category '{newItem.Category}', no addition necessary.");
-                }
-            }
-             */
-
             foreach (var newItem in newTestItems)
             {
                 var existingItem = _database.Table<TestItem>().FirstOrDefault(test => test.Id == newItem.Id);

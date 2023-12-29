@@ -7,32 +7,26 @@ using SQLite;
 using System.Linq;
 using MentalTest.Interfaces;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using System.Globalization;
 
 namespace MentalTest.ViewModels
 {
     public class SurveyViewModel : INotifyPropertyChanged
     {
         private readonly SQLiteConnection _database;
-
-        public bool IsFirstAnswerSelected => SelectedAnswer == AnswerFirst;
-        public bool IsSecondAnswerSelected => SelectedAnswer == AnswerSecond;
-        public bool IsThirdAnswerSelected => SelectedAnswer == AnswerThird;
-        public bool IsFourthAnswerSelected => SelectedAnswer == AnswerFourth;
-
+        public ObservableCollection<string> CurrentAnswers =>
+          new ObservableCollection<string>(CurrentQuestion?.Answers.Split(';') ?? new string[0]);
         public ObservableCollection<Question> Questions { get; set; }
-        public Command<string> AnswerCommand { get; set; }
         public Command ContinueCommand { get; set; }
         public int CurrentQuestionIndex { get; set; }
         public Question CurrentQuestion => Questions.Count > CurrentQuestionIndex ? Questions[CurrentQuestionIndex] : null;
+        public ICommand AnswerCommand { get; private set; }
 
         public ObservableCollection<string> SelectedAnswers { get; set; } = new ObservableCollection<string>();
 
-        public string AnswerFirst => CurrentQuestion?.Answers.Split(';').ElementAtOrDefault(0);
-        public string AnswerSecond => CurrentQuestion?.Answers.Split(';').ElementAtOrDefault(1);
-        public string AnswerThird => CurrentQuestion?.Answers.Split(';').ElementAtOrDefault(2);
-        public string AnswerFourth => CurrentQuestion?.Answers.Split(';').ElementAtOrDefault(3);
-
         private string _selectedAnswer;
+
         public string SelectedAnswer
         {
             get => _selectedAnswer;
@@ -41,8 +35,10 @@ namespace MentalTest.ViewModels
                 if (_selectedAnswer != value)
                 {
                     _selectedAnswer = value;
-                    OnPropertyChanged(nameof(SelectedAnswer));
-                    
+                    OnPropertyChanged(nameof(IsFirstAnswerSelected));
+                    OnPropertyChanged(nameof(IsSecondAnswerSelected));
+                    OnPropertyChanged(nameof(IsThirdAnswerSelected));
+                    OnPropertyChanged(nameof(IsFourthAnswerSelected));
                 }
             }
         }
@@ -53,6 +49,7 @@ namespace MentalTest.ViewModels
             {
                 var fileHelper = DependencyService.Get<IFileHelper>();
                 var dbPath = fileHelper.GetLocalFilePath("MentalTestDB.db");
+                AnswerCommand = new Command<string>(OnAnswerSelected);
 
                 //ExportDatabase(@"D:\MentalAppSqlDb\MentalTestDB.db").GetAwaiter().GetResult();
 
@@ -78,8 +75,6 @@ namespace MentalTest.ViewModels
                 throw;
             }
         }
-
-
         private void LoadQuestions(int testId)
         {
             try
@@ -128,10 +123,8 @@ namespace MentalTest.ViewModels
                 Console.WriteLine($"Stack Trace: {ex.StackTrace}");
             }
         }
-
         private void LoadFinalAnswers(int testId)
         {
-            // Создание таблицы для итоговых ответов, если она еще не существует
             string createFinalAnswersTableQuery = @"
                 CREATE TABLE IF NOT EXISTS FinalAnswers (
                     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -141,45 +134,37 @@ namespace MentalTest.ViewModels
                 )";
             _database.Execute(createFinalAnswersTableQuery);
 
-            // Проверка наличия итоговых ответов для данного теста
             var existingFinalAnswers = _database.Table<FinalAnswer>().Where(fa => fa.TestId == testId).ToList();
             if (!existingFinalAnswers.Any())
             {
                 var finalAnswersToInsert = new List<FinalAnswer>
-        {
-            new FinalAnswer { TestId = 11, ResultText = "Вы настоящий ангел на поле боя, как Mercy.", ScoreRange = "High" },
-            new FinalAnswer { TestId = 11, ResultText = "Ваша забота и поддержка напоминают о Mercy.", ScoreRange = "Medium" },
-            new FinalAnswer { TestId = 11, ResultText = "Да ты вообще не должен играть за Mercy, лузер.", ScoreRange = "Low" },
-
-        };
+                {
+                    new FinalAnswer { TestId = 11, ResultText = "Вы настоящий ангел на поле боя, как Mercy.", ScoreRange = "High" },
+                    new FinalAnswer { TestId = 11, ResultText = "Ваша забота и поддержка напоминают о Mercy.", ScoreRange = "Medium" },
+                    new FinalAnswer { TestId = 11, ResultText = "Да ты вообще не должен играть за Mercy, лузер.", ScoreRange = "Low" },
+        
+                };
                 foreach (var finalAnswer in finalAnswersToInsert)
                 {
                     _database.Insert(finalAnswer);
                 }
             }
         }
-
         private void OnContinue()
         {
+            if (SelectedAnswer != null)
+            {
+                SelectedAnswers.Add(SelectedAnswer);
+                OnPropertyChanged(nameof(SelectedAnswers));
+            }
+
             if (CurrentQuestionIndex < Questions.Count - 1)
             {
-                // Проверка, что ответ был выбран перед сохранением
-                if (SelectedAnswer != null)
-                {
-                    SelectedAnswers.Add(SelectedAnswer);
-                }
-
                 CurrentQuestionIndex++;
                 SelectedAnswer = null;
-
-                // Обновление свойств для следующего вопроса
                 OnPropertyChanged(nameof(CurrentQuestion));
-                OnPropertyChanged(nameof(AnswerFirst));
-                OnPropertyChanged(nameof(AnswerSecond));
-                OnPropertyChanged(nameof(AnswerThird));
-                OnPropertyChanged(nameof(AnswerFourth));
+                OnPropertyChanged(nameof(CurrentAnswers));
 
-                // Обновление свойств для отображения выбранного ответа
                 OnPropertyChanged(nameof(IsFirstAnswerSelected));
                 OnPropertyChanged(nameof(IsSecondAnswerSelected));
                 OnPropertyChanged(nameof(IsThirdAnswerSelected));
@@ -190,13 +175,8 @@ namespace MentalTest.ViewModels
                 FinishTest();
             }
         }
-
-
-
-
         private void FinishTest()
         {
-            //TODO 5 вопросов надо добавить в поля, и вообще подумать над автоматизацией этого момента, потому что количетсво вопросов всегда будет разное
             var results = new Dictionary<string, int>();
             foreach (var answer in SelectedAnswers)
             {
@@ -205,67 +185,37 @@ namespace MentalTest.ViewModels
                 results[answer]++;
             }
 
-            // Вычисление процента правильных ответов
             var totalAnswers = Questions.Count;
-            var correctAnswersCount = results.Values.Sum();
+            var correctAnswersCount = Questions.Where(q => SelectedAnswers[q.Id - 1] == q.Answers.Split(';')[q.CorrectAnswerIndex]).Count();
+
             var percentage = (correctAnswersCount / (float)totalAnswers) * 100;
 
-            // Определение диапазона оценок
             string scoreRange = percentage >= 90 ? "High" : percentage >= 50 ? "Medium" : "Low";
 
-            // Выбор итогового результата на основе диапазона оценок
             var finalResult = _database.Table<FinalAnswer>()
                                 .FirstOrDefault(fa => fa.TestId == CurrentQuestion.TestId && fa.ScoreRange == scoreRange)?.ResultText;
 
-            string finalResultMessage = finalResult ?? "Результат не найден.";
-            Console.WriteLine($"Отправка результата теста: {finalResultMessage}");
+            string finalResultMessage = finalResult ?? "Result is not found.";
             MessagingCenter.Send(this, "FinishTest", finalResultMessage);
-
         }
+        public bool IsFirstAnswerSelected => SelectedAnswer == CurrentAnswers[0];
+        public bool IsSecondAnswerSelected => SelectedAnswer == CurrentAnswers[1];
+        public bool IsThirdAnswerSelected => SelectedAnswer == CurrentAnswers[2];
+        public bool IsFourthAnswerSelected => SelectedAnswer == CurrentAnswers[3];
 
-
-        private object SelectFinalResult(Dictionary<string, int> results, int testId)
-        {
-            throw new NotImplementedException();
-        }
-
+        public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        public event PropertyChangedEventHandler PropertyChanged;
 
         private void OnAnswerSelected(string answer)
         {
             if (!string.IsNullOrEmpty(answer))
             {
                 SelectedAnswer = answer;
-                OnPropertyChanged(nameof(IsFirstAnswerSelected));
-                OnPropertyChanged(nameof(IsSecondAnswerSelected));
-                OnPropertyChanged(nameof(IsThirdAnswerSelected));
-                OnPropertyChanged(nameof(IsFourthAnswerSelected));
             }
         }
-
-        public async Task ExportDatabase(string destinationPath)
-        {
-            try
-            {
-                var fileHelper = DependencyService.Get<IFileHelper>();
-                if (fileHelper == null)
-                    throw new InvalidOperationException("FileHelper not found");
-
-                var dbPath = fileHelper.GetLocalFilePath("MentalTestDB.db");
-                // Копирование файла базы данных
-                System.IO.File.Copy(dbPath, destinationPath, overwrite: true);
-                Console.WriteLine($"Database copied to {destinationPath}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error during database export: {ex.Message}");
-            }
-        }
-
     }
 
     public class Question
@@ -281,7 +231,6 @@ namespace MentalTest.ViewModels
         [NotNull]
         public int CorrectAnswerIndex { get; set; }
     }
-
 
     public class FinalAnswer
     {

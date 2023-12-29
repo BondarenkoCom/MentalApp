@@ -6,6 +6,7 @@ using Xamarin.Forms.Internals;
 using MentalTest.Interfaces;
 using System.IO;
 using System.Globalization;
+using MentalTest.ViewModels;
 
 namespace MentalTest
 {
@@ -15,6 +16,12 @@ namespace MentalTest
         {
             Log.Listeners.Add(new DelegateLogListener((arg1, arg2) => System.Diagnostics.Debug.WriteLine(arg2)));
             InitializeComponent();
+
+            MessagingCenter.Subscribe<SurveyViewModel, string>(this, "FinishTest", async (sender, resultText) =>
+            {
+                await MainPage.Navigation.PushAsync(new FinalResultsPage(resultText));
+            });
+
             MainPage = new NavigationPage(new SplashPage());
         }
 
