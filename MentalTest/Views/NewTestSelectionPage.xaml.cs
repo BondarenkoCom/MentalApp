@@ -14,23 +14,24 @@ namespace MentalTest.Views
             InitializeComponent();
 
             _viewModel = new NewTestSelectionViewModel();
-            _viewModel.Navigation = Navigation;  // передаем текущий объект Navigation в ViewModel
+            _viewModel.Navigation = Navigation;
             BindingContext = _viewModel;
+        }
 
-            System.Diagnostics.Debug.WriteLine("NewTestSelectionPage Initialized and ViewModel set.");
+        protected override bool OnBackButtonPressed()
+        {
+            Navigation.PushAsync(new TestsPage("null"));
+            return true; 
         }
 
         private async void OnItemTapped(object sender, ItemTappedEventArgs e)
         {
-            // Получение выбранного объекта (если вам это нужно)
             var selectedTestType = e.Item as TestType;
 
             if (selectedTestType != null)
             {
-                // Переход на страницу с карточками тестов
                 await Navigation.PushAsync(new TestsPage(selectedTestType.Name));
 
-                // Сброс выбора (чтобы элемент не оставался выделенным)
                 ((ListView)sender).SelectedItem = null;
 
                 Application.Current.Properties["selectedTestName"] = selectedTestType.Name;

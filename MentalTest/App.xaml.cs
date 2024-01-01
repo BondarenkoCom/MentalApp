@@ -1,11 +1,9 @@
 ﻿using System;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 using MentalTest.Views;
 using Xamarin.Forms.Internals;
 using MentalTest.Interfaces;
 using System.IO;
-using System.Globalization;
 using MentalTest.ViewModels;
 
 namespace MentalTest

@@ -6,9 +6,7 @@ using System.Collections.Generic;
 using SQLite;
 using System.Linq;
 using MentalTest.Interfaces;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Globalization;
 
 namespace MentalTest.ViewModels
 {
@@ -53,11 +51,10 @@ namespace MentalTest.ViewModels
 
                 //ExportDatabase(@"D:\MentalAppSqlDb\MentalTestDB.db").GetAwaiter().GetResult();
 
-
                 var databaseAssetService = DependencyService.Get<IDatabaseAssetService>();
                 if (databaseAssetService == null)
                     throw new InvalidOperationException("Failed to retrieve IDatabaseAssetService");
-                //ERROR in here
+
                 _database = new SQLiteConnection(dbPath);
                 _database.CreateTable<Question>();
                 _database.CreateTable<FinalAnswer>();
@@ -84,7 +81,6 @@ namespace MentalTest.ViewModels
                 var info = _database.GetTableInfo("Questions");
                 if (!info.Any())
                 {
-                    // Если таблица не существует, создаем ее со всеми необходимыми столбцами
                     _database.Execute(@"
                         CREATE TABLE Questions (
                             Id INTEGER NOT NULL PRIMARY KEY,
@@ -95,7 +91,6 @@ namespace MentalTest.ViewModels
                         )");
                 }
 
-                // Загрузка существующих вопросов или вставка новых, если они не существуют
                 var existingQuestions = _database.Table<Question>().Where(q => q.TestId == testId).ToList();
                 if (!existingQuestions.Any())
                 {
@@ -113,7 +108,6 @@ namespace MentalTest.ViewModels
                     }
                 }
 
-                // Загрузка вопросов в ObservableCollection
                 Questions = new ObservableCollection<Question>(_database.Table<Question>().Where(q => q.TestId == testId).ToList());
                 LoadFinalAnswers(testId);
             }
@@ -241,6 +235,6 @@ namespace MentalTest.ViewModels
         [NotNull]
         public string ResultText { get; set; }
         [NotNull]
-        public string ScoreRange { get; set; } // High, Medium, Low
+        public string ScoreRange { get; set; }
     }
 }

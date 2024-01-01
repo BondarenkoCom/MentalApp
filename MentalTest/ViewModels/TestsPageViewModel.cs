@@ -4,7 +4,6 @@ using System.Linq;
 using Xamarin.Forms;
 using SQLite;
 using MentalTest.Interfaces;
-using System.IO;
 using System;
 using System.Threading.Tasks;
 using MentalTest.Views;
@@ -122,7 +121,6 @@ namespace MentalTest.ViewModels
         {
             if (testItem != null)
             {
-                // Выполняем навигацию к SurveyPage, передавая testItem как параметр
                 await Application.Current.MainPage.Navigation.PushAsync(new SurveyPage(testItem));
             }
         }
@@ -137,6 +135,6 @@ namespace MentalTest.ViewModels
         public string Description { get; set; }
         public string QuestionsStatus { get; set; }
         public bool IsStarred { get; set; }
-        public string Category { get; set; }  // New field
+        public string Category { get; set; }
     }
 }

@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
+﻿using System.ComponentModel;
+using Xamarin.Forms;
 
 namespace MentalTest.ViewModels
 {
     public class FinalResultsViewModel : INotifyPropertyChanged
     {
         private string _finalResultMessage;
+
+        public Command ReturnHomeCommand { get; private set; }
+
         public string FinalResultMessage
         {
             get { return _finalResultMessage; }
@@ -24,6 +25,12 @@ namespace MentalTest.ViewModels
         public FinalResultsViewModel(string resultText)
         {
             FinalResultMessage = resultText;
+            ReturnHomeCommand = new Command(ReturnHomeExecute);
+        }
+
+        private async void ReturnHomeExecute()
+        {
+            await Application.Current.MainPage.Navigation.PopToRootAsync();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -32,6 +39,4 @@ namespace MentalTest.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
-
-
 }
