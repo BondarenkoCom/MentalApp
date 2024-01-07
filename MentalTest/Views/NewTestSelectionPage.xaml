@@ -5,7 +5,10 @@
              BackgroundColor="#FAFAFA"
              NavigationPage.HasNavigationBar="False">
     <ContentPage.Content>
+        
         <RelativeLayout>
+            <Button Text="Debug page"
+                    Clicked="DebugPageButton_Clicked"/>
             <Label Text="Category"
                    FontFamily="Montserrat"
                    FontAttributes="Bold"
@@ -45,6 +48,7 @@
                             </Frame>
                         </ViewCell>
                     </DataTemplate>
+                    
                 </ListView.ItemTemplate>
             </ListView>
         </RelativeLayout>

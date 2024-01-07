@@ -58,14 +58,20 @@ namespace MentalTest.ViewModels
             var newTestItems = new List<TestItem>
             {
                 //new TestItem { Title = "Mutant Workload Assessment", Description = "Analyzes Jean Grey's potential fatigue from her extensive commitments to the X-Men team and her psychic responsibilities.", QuestionsStatus = "2/3 questions", IsStarred = false, Category = "Job" },
-                //new TestItem { Title = "Cybernetic Operative Downtime Analysis", Description = "Evaluates Motoko Kusanagi's need for rest and recuperation from her demanding role in Section 9.", QuestionsStatus = "0/5 questions", IsStarred = false, Category = "Job" },
-                  new TestItem {
-                      Id = 11,
-                      Title = "How well do you know Mercy?",
-                      Description = "Test your knowledge and skills about Mercy from Overwatch.",
+                  new TestItem { 
+                      Id = 13,
+                      Title = "Understanding Motoko Kusanagi",
+                      Description = "Assesses your knowledge and understanding of Motoko Kusanagi's character, her roles and philosophies in Section 9.",
                       QuestionsStatus = "0/5 questions",
                       IsStarred = false,
-                      Category = "Job" },
+                      Category = "Job" }
+                  //new TestItem {
+                  //    Id = 11,
+                  //    Title = "How well do you know Mercy?",
+                  //    Description = "Test your knowledge and skills about Mercy from Overwatch.",
+                  //    QuestionsStatus = "0/5 questions",
+                  //    IsStarred = false,
+                  //    Category = "Job" },
             };
 
             foreach (var newItem in newTestItems)

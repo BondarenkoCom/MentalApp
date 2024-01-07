@@ -1,4 +1,5 @@
 ﻿using MentalTest.ViewModels;
+using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -43,6 +44,11 @@ namespace MentalTest.Views
             {
                 System.Diagnostics.Debug.WriteLine("OnItemTapped was triggered but no valid TestType was selected.");
             }
+        }
+
+        private async void DebugPageButton_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new DebugPage());
         }
     }
 }

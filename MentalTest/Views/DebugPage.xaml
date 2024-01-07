@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MentalTest.Views.DebugPage"
+             Title="Debug Page">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <DataTemplate x:Key="QuestionTemplate">
+                <ViewCell>
+                    <Grid Padding="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackLayout Grid.Column="0" Orientation="Vertical">
+                            <Label Text="{Binding QuestionText}" TextColor="Blue" />
+                            <Label Text="{Binding Answers}" TextColor="Blue" />
+                            <Label Text="{Binding CorrectAnswerIndex}" TextColor="Blue" />
+                        </StackLayout>
+                        <!-- Ваши кнопки Edit и Delete -->
+                    </Grid>
+                </ViewCell>
+            </DataTemplate>
+            <DataTemplate x:Key="FinalAnswerTemplate">
+                <ViewCell>
+                    <Grid Padding="10">
+                        <StackLayout Grid.Column="0" Orientation="Vertical">
+                            <Label Text="{Binding ResultText}" TextColor="Blue" />
+                            <Label Text="{Binding ScoreRange}" TextColor="Blue" />
+                        </StackLayout>
+                    </Grid>
+                </ViewCell>
+            </DataTemplate>
+            <DataTemplate x:Key="TestItemTemplate">
+                <ViewCell>
+                    <Grid Padding="10">
+                        <StackLayout Grid.Column="0" Orientation="Vertical">
+                            <Label Text="{Binding Title}" TextColor="Blue" />
+                            <Label Text="{Binding Description}" TextColor="Blue" />
+                            <Label Text="{Binding QuestionsStatus}" TextColor="Blue" />
+                            <Label Text="{Binding IsStarred}" TextColor="Blue" />
+                            <Label Text="{Binding Category}" TextColor="Blue" />
+                        </StackLayout>
+                    </Grid>
+                </ViewCell>
+            </DataTemplate>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <StackLayout Spacing="10">
+        <Picker x:Name="TablePicker"
+                Title="Select Table">
+            <Picker.Items>
+                <x:String>Questions</x:String>
+                <x:String>FinalAnswers</x:String>
+                <x:String>TestItems</x:String>
+            </Picker.Items>
+        </Picker>
+
+        <ListView x:Name="DataListView"
+                  RowHeight="120">
+        </ListView>
+
+        <StackLayout x:Name="EditLayout" IsVisible="False">
+            <Entry x:Name="EditEntry" Placeholder="Enter text"/>
+            <Button Text="Save" Clicked="OnSaveClicked" />
+            <Button Text="Cancel" Clicked="OnCancelClicked" />
+        </StackLayout>
+    </StackLayout>
+</ContentPage>
