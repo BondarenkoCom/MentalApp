@@ -11,6 +11,7 @@ namespace MentalTest.Views
     public partial class DebugPage : ContentPage
     {
         private SQLiteConnection _database;
+        private object _selectedItem; 
 
         public DebugPage()
         {
@@ -19,7 +20,6 @@ namespace MentalTest.Views
             var dbPath = fileHelper.GetLocalFilePath("MentalTestDB.db");
             _database = new SQLiteConnection(dbPath);
 
-            // Инициализация элементов выпадающего списка
             TablePicker.ItemsSource = new List<string> { "Questions", "FinalAnswers", "TestItems" };
             TablePicker.SelectedIndexChanged += OnTablePickerSelected;
         }
@@ -44,18 +44,29 @@ namespace MentalTest.Views
         {
             if (e.SelectedItem != null)
             {
-                // Обработка выбранного элемента
-                // Например, сохраните выбранный элемент в переменную класса для дальнейшего использования
-                // Или обновите интерфейс, чтобы показать опции для выбранного элемента
-                // Пример: _selectedItem = e.SelectedItem;
-
-                // Здесь код для обработки выбранного элемента
+               
             }
         }
 
         private void OnEditClicked(object sender, EventArgs e)
         {
-           
+            var item = (sender as Button)?.CommandParameter;
+            _selectedItem = item;
+
+            EditLayout.IsVisible = true;
+
+            if (item is Question question)
+            {
+                EditEntry.Text = question.QuestionText;
+            }
+            else if (item is FinalAnswer finalAnswer)
+            {
+                EditEntry.Text = finalAnswer.ResultText;
+            }
+            else if (item is TestItem testItem)
+            {
+                EditEntry.Text = testItem.Title;
+            }
         }
 
         private void OnDeleteClicked(object sender, EventArgs e)
@@ -80,13 +91,35 @@ namespace MentalTest.Views
 
 
         private void OnSaveClicked(object sender, EventArgs e)
-        { 
-        
+        {
+            if (_selectedItem == null) return;
+
+            if (_selectedItem is Question question)
+            {
+                question.QuestionText = EditEntry.Text;
+                _database.Update(question);
+            }
+            else if (_selectedItem is FinalAnswer finalAnswer)
+            {
+                finalAnswer.ResultText = EditEntry.Text;
+                _database.Update(finalAnswer);
+            }
+            else if (_selectedItem is TestItem testItem)
+            {
+                testItem.Title = EditEntry.Text;
+                _database.Update(testItem);
+            }
+
+            EditLayout.IsVisible = false;
+            _selectedItem = null;
+
+            OnTablePickerSelected(this, EventArgs.Empty);
         }
 
         private void OnCancelClicked(object sender, EventArgs e)
         {
-
+            EditLayout.IsVisible = false;
+            _selectedItem = null;
         }
 
         private void LoadData<T>() where T : new()
@@ -96,17 +129,14 @@ namespace MentalTest.Views
 
             if (typeof(T) == typeof(Question))
             {
-                // Устанавливаем DataTemplate для Question
                 DataListView.ItemTemplate = (DataTemplate)this.Resources["QuestionTemplate"];
             }
             else if (typeof(T) == typeof(FinalAnswer))
             {
-                // Устанавливаем DataTemplate для FinalAnswer
                 DataListView.ItemTemplate = (DataTemplate)this.Resources["FinalAnswerTemplate"];
             }
             else if (typeof(T) == typeof(TestItem))
             {
-                // Устанавливаем DataTemplate для TestItem
                 DataListView.ItemTemplate = (DataTemplate)this.Resources["TestItemTemplate"];
             }
         }

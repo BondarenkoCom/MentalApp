@@ -129,7 +129,7 @@ namespace MentalTest.ViewModels
             {
                 await Application.Current.MainPage.Navigation.PushAsync(new SurveyPage(testItem));
             }
-        }
+        }   
 
     }
 

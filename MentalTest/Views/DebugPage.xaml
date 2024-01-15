@@ -19,7 +19,14 @@
                             <Label Text="{Binding Answers}" TextColor="Blue" />
                             <Label Text="{Binding CorrectAnswerIndex}" TextColor="Blue" />
                         </StackLayout>
-                        <!-- Ваши кнопки Edit и Delete -->
+                        <Button Text="Edit"
+                                Grid.Column="1"
+                                CommandParameter="{Binding .}"
+                                Clicked="OnEditClicked" />
+                        <Button Text="Delete"
+                                Grid.Column="2"
+                                CommandParameter="{Binding .}"
+                                Clicked="OnDeleteClicked" />
                     </Grid>
                 </ViewCell>
             </DataTemplate>
@@ -30,6 +37,14 @@
                             <Label Text="{Binding ResultText}" TextColor="Blue" />
                             <Label Text="{Binding ScoreRange}" TextColor="Blue" />
                         </StackLayout>
+                        <Button Text="Edit"
+                                Grid.Column="1"
+                                CommandParameter="{Binding .}"
+                                Clicked="OnEditClicked" />
+                        <Button Text="Delete"
+                                Grid.Column="2"
+                                CommandParameter="{Binding .}"
+                                Clicked="OnDeleteClicked" />
                     </Grid>
                 </ViewCell>
             </DataTemplate>
@@ -43,6 +58,14 @@
                             <Label Text="{Binding IsStarred}" TextColor="Blue" />
                             <Label Text="{Binding Category}" TextColor="Blue" />
                         </StackLayout>
+                        <Button Text="Edit"
+                                Grid.Column="1"
+                                CommandParameter="{Binding .}"
+                                Clicked="OnEditClicked" />
+                        <Button Text="Delete"
+                                Grid.Column="2"
+                                CommandParameter="{Binding .}"
+                                Clicked="OnDeleteClicked" />
                     </Grid>
                 </ViewCell>
             </DataTemplate>
@@ -61,6 +84,7 @@
 
         <ListView x:Name="DataListView"
                   RowHeight="120">
+            <!-- ItemTemplate будет устанавливаться динамически в коде C# -->
         </ListView>
 
         <StackLayout x:Name="EditLayout" IsVisible="False">
