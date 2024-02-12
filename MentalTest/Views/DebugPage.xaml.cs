@@ -35,7 +35,7 @@ namespace MentalTest.Views
                     LoadData<FinalAnswer>();
                     break;
                 case "TestItems":
-                    LoadData<TestItem>();
+                    LoadData<testCard>();
                     break;
             }
         }
@@ -63,9 +63,9 @@ namespace MentalTest.Views
             {
                 EditEntry.Text = finalAnswer.ResultText;
             }
-            else if (item is TestItem testItem)
+            else if (item is testCard testItem)
             {
-                EditEntry.Text = testItem.Title;
+                EditEntry.Text = testItem.title;
             }
         }
 
@@ -81,7 +81,7 @@ namespace MentalTest.Views
             {
                 _database.Delete(finalAnswer);
             }
-            else if (item is TestItem testItem)
+            else if (item is testCard testItem)
             {
                 _database.Delete(testItem);
             }
@@ -104,9 +104,9 @@ namespace MentalTest.Views
                 finalAnswer.ResultText = EditEntry.Text;
                 _database.Update(finalAnswer);
             }
-            else if (_selectedItem is TestItem testItem)
+            else if (_selectedItem is testCard testItem)
             {
-                testItem.Title = EditEntry.Text;
+                testItem.title = EditEntry.Text;
                 _database.Update(testItem);
             }
 
@@ -135,7 +135,7 @@ namespace MentalTest.Views
             {
                 DataListView.ItemTemplate = (DataTemplate)this.Resources["FinalAnswerTemplate"];
             }
-            else if (typeof(T) == typeof(TestItem))
+            else if (typeof(T) == typeof(testCard))
             {
                 DataListView.ItemTemplate = (DataTemplate)this.Resources["TestItemTemplate"];
             }

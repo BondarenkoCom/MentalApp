@@ -7,10 +7,10 @@ namespace MentalTest.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SurveyPage : ContentPage
     {
-        public SurveyPage(TestItem test)
+        public SurveyPage(testCard test)
         {
             InitializeComponent();
-            BindingContext = new SurveyViewModel(test.Id);
+            BindingContext = new SurveyViewModel(test.id);
         }
     }
 }

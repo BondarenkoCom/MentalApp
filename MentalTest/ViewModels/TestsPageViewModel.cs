@@ -7,88 +7,45 @@ using MentalTest.Interfaces;
 using System;
 using System.Threading.Tasks;
 using MentalTest.Views;
+using System.Net.Http;
+using Newtonsoft.Json;
+using MentalTest.Service;
 
 namespace MentalTest.ViewModels
 {
     public class TestsPageViewModel
     {
         private readonly SQLiteConnection _database;
-        public ObservableCollection<TestItem> TestItems { get; set; }
+        public ObservableCollection<testCard> TestItems { get; set; }
         public string SelectedCategory { get; set; }
-        public Command<TestItem> ItemTappedCommand { get; }
+        public Command<testCard> ItemTappedCommand { get; }
+        private ApiService _apiService;
+
+
+        //public TestsPageViewModel(string categoryName)
+        //{
+        //    ItemTappedCommand = new Command<testCard>(async (testItem) => await OnTestItemTapped(testItem));
+        //    _apiService = new ApiService();
+        //    LoadTestItemsAsync();
+        //
+        //}
 
         public TestsPageViewModel(string categoryName)
         {
-            ItemTappedCommand = new Command<TestItem>(async (testItem) => await OnTestItemTapped(testItem));
-            try
-            {
-                var dbName = "MentalTestDB.db";
-                var dbPath = DependencyService.Get<IFileHelper>().GetLocalFilePath(dbName);
-                Console.WriteLine($"Database path: {dbPath}");
-
-                var databaseAssetService = DependencyService.Get<IDatabaseAssetService>();
-                if (databaseAssetService == null)
-                    throw new InvalidOperationException("Failed to retrieve IDatabaseAssetService");
-
-                databaseAssetService.CopyDatabaseIfNotExists(dbName, dbPath);
-
-                _database = new SQLiteConnection(dbPath);
-
-                _database.CreateTable<TestItem>();
-                SeedDatabaseWithJobTests();
-
-                Console.WriteLine($"Database path: {dbPath}");
-
-                SelectedCategory = categoryName ?? "default category";
-                Console.WriteLine($"Selected category: {SelectedCategory}");
-
-                LoadTestsByCategory();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Exception occurred in the constructor of TestsPageViewModel: {ex.Message}");
-                Console.WriteLine($"Call stack: {ex.StackTrace}");
-                throw;
-            }
-            
+            SelectedCategory = categoryName; // Добавьте эту строку для инициализации SelectedCategory
+            ItemTappedCommand = new Command<testCard>(async (testItem) => await OnTestItemTapped(testItem));
+            _apiService = new ApiService();
+            LoadTestItemsAsync();
         }
 
-        private void SeedDatabaseWithJobTests()
+        //            string apiUrl = "https://192.168.1.2:7098/api/testcards";
+
+
+        private async void LoadTestItemsAsync()
         {
-            var newTestItems = new List<TestItem>
-            {
-                //new TestItem { Title = "Mutant Workload Assessment", Description = "Analyzes Jean Grey's potential fatigue from her extensive commitments to the X-Men team and her psychic responsibilities.", QuestionsStatus = "2/3 questions", IsStarred = false, Category = "Job" },
-                  new TestItem { 
-                      Id = 13,
-                      Title = "Understanding Motoko Kusanagi",
-                      Description = "Assesses your knowledge and understanding of Motoko Kusanagi's character, her roles and philosophies in Section 9.",
-                      QuestionsStatus = "0/5 questions",
-                      IsStarred = false,
-                      Category = "Job" }
-                  //new TestItem {
-                  //    Id = 11,
-                  //    Title = "How well do you know Mercy?",
-                  //    Description = "Test your knowledge and skills about Mercy from Overwatch.",
-                  //    QuestionsStatus = "0/5 questions",
-                  //    IsStarred = false,
-                  //    Category = "Job" },
-            };
-
-            foreach (var newItem in newTestItems)
-            {
-                var existingItem = _database.Table<TestItem>().FirstOrDefault(test => test.Id == newItem.Id);
-                if (existingItem == null)
-                {
-                    _database.Insert(newItem);
-                    Console.WriteLine($"New test '{newItem.Title}' with Id '{newItem.Id}' added to category '{newItem.Category}'.");
-                }
-                else
-                {
-                    Console.WriteLine($"A test with the Id '{newItem.Id}' already exists in category '{newItem.Category}', no addition necessary.");
-                }
-            }
+            var testItems = await _apiService.GetTestItemsByCategoryAsync(SelectedCategory); // Используйте свойство `SelectedCategory`
+            TestItems = new ObservableCollection<testCard>(testItems);
         }
-
 
         private void LoadTestsByCategory()
         {
@@ -96,7 +53,7 @@ namespace MentalTest.ViewModels
             {
                 Console.WriteLine($"Attempting to load tests for category: {SelectedCategory}");
 
-                var testQuery = _database.Table<TestItem>().Where(test => test.Category == SelectedCategory);
+                var testQuery = _database.Table<testCard>().Where(test => test.category == SelectedCategory);
                 var filteredTests = testQuery.ToList();
                 Console.WriteLine($"Query executed. Number of tests retrieved: {filteredTests.Count}");
 
@@ -105,7 +62,7 @@ namespace MentalTest.ViewModels
                     Console.WriteLine($"Found {filteredTests.Count} tests for category: {SelectedCategory}");
                     foreach (var test in filteredTests)
                     {
-                        Console.WriteLine($"Test ID: {test.Id}, Title: {test.Title}, Description: {test.Description}");
+                        Console.WriteLine($"Test ID: {test.id}, Title: {test.title}, Description: {test.description}");
                     }
                 }
                 else
@@ -113,7 +70,7 @@ namespace MentalTest.ViewModels
                     Console.WriteLine($"No tests found for category: {SelectedCategory}");
                 }
 
-                TestItems = new ObservableCollection<TestItem>(filteredTests);
+                TestItems = new ObservableCollection<testCard>(filteredTests);
                 Console.WriteLine($"Observable collection initialized with {TestItems.Count} items.");
             }
             catch (Exception ex)
@@ -123,7 +80,7 @@ namespace MentalTest.ViewModels
             }
         }
 
-        private async Task OnTestItemTapped(TestItem testItem)
+        private async Task OnTestItemTapped(testCard testItem)
         {
             if (testItem != null)
             {
@@ -133,14 +90,14 @@ namespace MentalTest.ViewModels
 
     }
 
-    public class TestItem
+    public class testCard
     {
         [PrimaryKey]
-        public int Id { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string QuestionsStatus { get; set; }
-        public bool IsStarred { get; set; }
-        public string Category { get; set; }
+        public int id { get; set; }
+        public string title { get; set; }
+        public string description { get; set; }
+        public string questions_status { get; set; }
+        public bool is_starred { get; set; }
+        public string category { get; set; }
     }
 }

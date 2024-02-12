@@ -157,9 +157,9 @@ namespace MentalTest.ViewModels
                 //};
                 var finalAnswersToInsert = new List<FinalAnswer>
                 {
-                    new FinalAnswer { TestId = 12, ResultText = "Вы настоящий стратег и мыслитель, в духе Motoko Kusanagi.", ScoreRange = "High" },
-                    new FinalAnswer { TestId = 12, ResultText = "Вы показали глубокое понимание сложных вопросов, как это делает Motoko.", ScoreRange = "Medium" },
-                    new FinalAnswer { TestId = 12, ResultText = "Похоже, вам еще предстоит изучить мир Motoko Kusanagi.", ScoreRange = "Low" }
+                    new FinalAnswer { TestId = 13, ResultText = "Вы настоящий стратег и мыслитель, в духе Motoko Kusanagi.", ScoreRange = "High" },
+                    new FinalAnswer { TestId = 13, ResultText = "Вы показали глубокое понимание сложных вопросов, как это делает Motoko.", ScoreRange = "Medium" },
+                    new FinalAnswer { TestId = 13, ResultText = "Похоже, вам еще предстоит изучить мир Motoko Kusanagi.", ScoreRange = "Low" }
                 };
                 foreach (var finalAnswer in finalAnswersToInsert)
                 {
