@@ -1,4 +1,5 @@
 ﻿using MentalTest.Interfaces;
+using MentalTest.Models;
 using MentalTest.ViewModels;
 using SQLite;
 using System;
@@ -29,13 +30,13 @@ namespace MentalTest.Views
             switch (TablePicker.SelectedItem.ToString())
             {
                 case "Questions":
-                    LoadData<Question>();
+                    LoadData<QuestionModal>();
                     break;
                 case "FinalAnswers":
                     LoadData<FinalAnswer>();
                     break;
                 case "TestItems":
-                    LoadData<testCard>();
+                    LoadData<TestCardModel>();
                     break;
             }
         }
@@ -55,7 +56,7 @@ namespace MentalTest.Views
 
             EditLayout.IsVisible = true;
 
-            if (item is Question question)
+            if (item is QuestionModal question)
             {
                 EditEntry.Text = question.QuestionText;
             }
@@ -63,7 +64,7 @@ namespace MentalTest.Views
             {
                 EditEntry.Text = finalAnswer.ResultText;
             }
-            else if (item is testCard testItem)
+            else if (item is TestCardModel testItem)
             {
                 EditEntry.Text = testItem.title;
             }
@@ -73,7 +74,7 @@ namespace MentalTest.Views
         {
             var item = (sender as Button)?.CommandParameter;
 
-            if (item is Question question)
+            if (item is QuestionModal question)
             {
                 _database.Delete(question);
             }
@@ -81,7 +82,7 @@ namespace MentalTest.Views
             {
                 _database.Delete(finalAnswer);
             }
-            else if (item is testCard testItem)
+            else if (item is TestCardModel testItem)
             {
                 _database.Delete(testItem);
             }
@@ -94,7 +95,7 @@ namespace MentalTest.Views
         {
             if (_selectedItem == null) return;
 
-            if (_selectedItem is Question question)
+            if (_selectedItem is QuestionModal question)
             {
                 question.QuestionText = EditEntry.Text;
                 _database.Update(question);
@@ -104,7 +105,7 @@ namespace MentalTest.Views
                 finalAnswer.ResultText = EditEntry.Text;
                 _database.Update(finalAnswer);
             }
-            else if (_selectedItem is testCard testItem)
+            else if (_selectedItem is TestCardModel testItem)
             {
                 testItem.title = EditEntry.Text;
                 _database.Update(testItem);
@@ -127,7 +128,7 @@ namespace MentalTest.Views
             var data = _database.Table<T>().ToList();
             DataListView.ItemsSource = data;
 
-            if (typeof(T) == typeof(Question))
+            if (typeof(T) == typeof(QuestionModal))
             {
                 DataListView.ItemTemplate = (DataTemplate)this.Resources["QuestionTemplate"];
             }
@@ -135,7 +136,7 @@ namespace MentalTest.Views
             {
                 DataListView.ItemTemplate = (DataTemplate)this.Resources["FinalAnswerTemplate"];
             }
-            else if (typeof(T) == typeof(testCard))
+            else if (typeof(T) == typeof(TestCardModel))
             {
                 DataListView.ItemTemplate = (DataTemplate)this.Resources["TestItemTemplate"];
             }

@@ -8,20 +8,24 @@ namespace MentalTest.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class TestsPage : ContentPage
     {
+        private TestsPageViewModel _viewModel;
+
         public TestsPage(string categoryName)
         {
-
-            Console.WriteLine("TestsPage constructor started.");
-
             InitializeComponent();
+            InitializeViewModelAsync(categoryName);
+        }
 
+        private async void InitializeViewModelAsync(string categoryName)
+        {
+            Console.WriteLine("TestsPage constructor started.");
             Console.WriteLine($"Initializing TestsPage for category: {categoryName}");
 
-            var viewModel = new TestsPageViewModel(categoryName);
+            _viewModel = new TestsPageViewModel(categoryName);
+            BindingContext = _viewModel;
 
+            await _viewModel.InitializeDataAsync(); 
             Console.WriteLine("ViewModel created for TestsPage.");
-            BindingContext = viewModel;
-
             Console.WriteLine("TestsPage constructor completed.");
         }
 
@@ -29,9 +33,7 @@ namespace MentalTest.Views
         {
             if (e.SelectedItem != null)
             {
-                var viewModel = BindingContext as TestsPageViewModel;
-                viewModel?.ItemTappedCommand.Execute(e.SelectedItem);
-
+                _viewModel.ItemTappedCommand.Execute(e.SelectedItem);
                 ((ListView)sender).SelectedItem = null;
             }
         }

@@ -7,6 +7,7 @@ using SQLite;
 using System.Linq;
 using MentalTest.Interfaces;
 using System.Windows.Input;
+using MentalTest.Models;
 
 namespace MentalTest.ViewModels
 {
@@ -15,10 +16,10 @@ namespace MentalTest.ViewModels
         private readonly SQLiteConnection _database;
         public ObservableCollection<string> CurrentAnswers =>
           new ObservableCollection<string>(CurrentQuestion?.Answers.Split(';') ?? new string[0]);
-        public ObservableCollection<Question> Questions { get; set; }
+        public ObservableCollection<QuestionModal> Questions { get; set; }
         public Command ContinueCommand { get; set; }
         public int CurrentQuestionIndex { get; set; }
-        public Question CurrentQuestion => Questions.Count > CurrentQuestionIndex ? Questions[CurrentQuestionIndex] : null;
+        public QuestionModal CurrentQuestion => Questions.Count > CurrentQuestionIndex ? Questions[CurrentQuestionIndex] : null;
         public ICommand AnswerCommand { get; private set; }
 
         public ObservableCollection<string> SelectedAnswers { get; set; } = new ObservableCollection<string>();
@@ -56,10 +57,10 @@ namespace MentalTest.ViewModels
                     throw new InvalidOperationException("Failed to retrieve IDatabaseAssetService");
 
                 _database = new SQLiteConnection(dbPath);
-                _database.CreateTable<Question>();
+                _database.CreateTable<QuestionModal>();
                 _database.CreateTable<FinalAnswer>();
 
-                Questions = new ObservableCollection<Question>();
+                Questions = new ObservableCollection<QuestionModal>();
                 AnswerCommand = new Command<string>(OnAnswerSelected);
                 ContinueCommand = new Command(OnContinue);
                 LoadQuestions(testId);
@@ -96,7 +97,7 @@ namespace MentalTest.ViewModels
                         )");
                 }
 
-                var existingQuestions = _database.Table<Question>().Where(q => q.TestId == testId).ToList();
+                var existingQuestions = _database.Table<QuestionModal>().Where(q => q.TestId == testId).ToList();
                 if (!existingQuestions.Any())
                 {
                     //var questionsToInsert = new List<Question>
@@ -108,13 +109,13 @@ namespace MentalTest.ViewModels
                     //     new Question { Id = 5, TestId = 11, QuestionText = "Which of these is not a Mercy skin?", Answers = "Witch;Devil;Archangel;Vampire", CorrectAnswerIndex = 3 }
                     // };
 
-                    var questionsToInsert = new List<Question>
+                    var questionsToInsert = new List<QuestionModal>
                     {
-                        new Question { Id = 1, TestId = 13, QuestionText = "Какие технологии использует Motoko для улучшения своих боевых способностей?", Answers = "Кибернетические имплантаты;Магия;Биологическое усовершенствование;Химические стимуляторы", CorrectAnswerIndex = 0 },
-                        new Question { Id = 2, TestId = 13, QuestionText = "Какова философия Motoko относительно человеческого сознания?", Answers = "Оно уникально;Оно может быть цифровым;Оно второстепенно;Оно неизменно", CorrectAnswerIndex = 1 },
-                        new Question { Id = 3, TestId = 13, QuestionText = "Как Motoko относится к своему кибернетическому телу?", Answers = "Как к инструменту;Как к проклятию;Как к подарку;Как к тюрьме", CorrectAnswerIndex = 0 },
-                        new Question { Id = 4, TestId = 13, QuestionText = "Какие межличностные отношения у Motoko в Section 9?", Answers = "Строго профессиональные;Дружеские;Романтические;Враждебные", CorrectAnswerIndex = 1 },
-                        new Question { Id = 5, TestId = 13, QuestionText = "Какова главная цель Motoko в ее борьбе?", Answers = "Защита личных данных;Разгадка корпоративных заговоров;Борьба за права киборгов;Разоблачение государственной коррупции", CorrectAnswerIndex = 3 }
+                        new QuestionModal { Id = 1, TestId = 13, QuestionText = "Какие технологии использует Motoko для улучшения своих боевых способностей?", Answers = "Кибернетические имплантаты;Магия;Биологическое усовершенствование;Химические стимуляторы", CorrectAnswerIndex = 0 },
+                        new QuestionModal { Id = 2, TestId = 13, QuestionText = "Какова философия Motoko относительно человеческого сознания?", Answers = "Оно уникально;Оно может быть цифровым;Оно второстепенно;Оно неизменно", CorrectAnswerIndex = 1 },
+                        new QuestionModal { Id = 3, TestId = 13, QuestionText = "Как Motoko относится к своему кибернетическому телу?", Answers = "Как к инструменту;Как к проклятию;Как к подарку;Как к тюрьме", CorrectAnswerIndex = 0 },
+                        new QuestionModal { Id = 4, TestId = 13, QuestionText = "Какие межличностные отношения у Motoko в Section 9?", Answers = "Строго профессиональные;Дружеские;Романтические;Враждебные", CorrectAnswerIndex = 1 },
+                        new QuestionModal { Id = 5, TestId = 13, QuestionText = "Какова главная цель Motoko в ее борьбе?", Answers = "Защита личных данных;Разгадка корпоративных заговоров;Борьба за права киборгов;Разоблачение государственной коррупции", CorrectAnswerIndex = 3 }
                     };
                 
 
@@ -125,7 +126,7 @@ namespace MentalTest.ViewModels
                     }
                 }
 
-                Questions = new ObservableCollection<Question>(_database.Table<Question>().Where(q => q.TestId == testId).ToList());
+                Questions = new ObservableCollection<QuestionModal>(_database.Table<QuestionModal>().Where(q => q.TestId == testId).ToList());
                 LoadFinalAnswers(testId);
             }
             catch (Exception ex)
@@ -240,20 +241,6 @@ namespace MentalTest.ViewModels
                 SelectedAnswer = answer;
             }
         }
-    }
-
-    public class Question
-    {
-        [PrimaryKey, NotNull]
-        public int Id { get; set; }
-        [NotNull]
-        public int TestId { get; set; }
-        [NotNull]
-        public string QuestionText { get; set; }
-        [NotNull]
-        public string Answers { get; set; }
-        [NotNull]
-        public int CorrectAnswerIndex { get; set; }
     }
 
     public class FinalAnswer

@@ -10,94 +10,109 @@ using MentalTest.Views;
 using System.Net.Http;
 using Newtonsoft.Json;
 using MentalTest.Service;
+using MentalTest.Models;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace MentalTest.ViewModels
 {
-    public class TestsPageViewModel
+    public class TestsPageViewModel : INotifyPropertyChanged
     {
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
         private readonly SQLiteConnection _database;
-        public ObservableCollection<testCard> TestItems { get; set; }
+        private ApiService _apiService = new ApiService();
+        private string _debugDataStoreInfo;
+
+        private bool _isDataLoading;
+        public bool IsDataLoading
+        {
+            get => _isDataLoading;
+            set
+            {
+                _isDataLoading = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsDataLoaded));
+            }
+        }
+
+        public string DebugDataStoreInfo
+        {
+            get => _debugDataStoreInfo;
+            set
+            {
+                _debugDataStoreInfo = value;
+                OnPropertyChanged(nameof(DebugDataStoreInfo));
+            }
+        }
+
+        public bool IsDataLoaded => !IsDataLoading;
+        public ObservableCollection<TestCardModel> TestItems { get; set; } = new ObservableCollection<TestCardModel>();
         public string SelectedCategory { get; set; }
-        public Command<testCard> ItemTappedCommand { get; }
-        private ApiService _apiService;
-
-
-        //public TestsPageViewModel(string categoryName)
-        //{
-        //    ItemTappedCommand = new Command<testCard>(async (testItem) => await OnTestItemTapped(testItem));
-        //    _apiService = new ApiService();
-        //    LoadTestItemsAsync();
-        //
-        //}
+        public Command<TestCardModel> ItemTappedCommand { get; }
 
         public TestsPageViewModel(string categoryName)
         {
-            SelectedCategory = categoryName; // Добавьте эту строку для инициализации SelectedCategory
-            ItemTappedCommand = new Command<testCard>(async (testItem) => await OnTestItemTapped(testItem));
-            _apiService = new ApiService();
-            LoadTestItemsAsync();
+            SelectedCategory = categoryName;
+            ItemTappedCommand = new Command<TestCardModel>(async (testItem) => await OnTestItemTapped(testItem));
         }
 
-        //            string apiUrl = "https://192.168.1.2:7098/api/testcards";
-
-
-        private async void LoadTestItemsAsync()
+        public async Task InitializeDataAsync()
         {
-            var testItems = await _apiService.GetTestItemsByCategoryAsync(SelectedCategory); // Используйте свойство `SelectedCategory`
-            TestItems = new ObservableCollection<testCard>(testItems);
+            IsDataLoading = true;
+            try
+            {
+                await FetchDataFromApiAndSaveAsync(SelectedCategory);
+                LoadDataFromDataStore();
+            }
+            finally
+            {
+                IsDataLoading = false;
+            }
         }
 
-        private void LoadTestsByCategory()
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
+           PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+        private async Task FetchDataFromApiAndSaveAsync(string category)
         {
             try
             {
-                Console.WriteLine($"Attempting to load tests for category: {SelectedCategory}");
-
-                var testQuery = _database.Table<testCard>().Where(test => test.category == SelectedCategory);
-                var filteredTests = testQuery.ToList();
-                Console.WriteLine($"Query executed. Number of tests retrieved: {filteredTests.Count}");
-
-                if (filteredTests.Any())
+                var testItems = await _apiService.GetTestItemsByCategoryAsync(category);
+                if (testItems != null && testItems.Any())
                 {
-                    Console.WriteLine($"Found {filteredTests.Count} tests for category: {SelectedCategory}");
-                    foreach (var test in filteredTests)
-                    {
-                        Console.WriteLine($"Test ID: {test.id}, Title: {test.title}, Description: {test.description}");
-                    }
+                    DataStore.Instance.SaveTestItems(testItems);
                 }
-                else
-                {
-                    Console.WriteLine($"No tests found for category: {SelectedCategory}");
-                }
-
-                TestItems = new ObservableCollection<testCard>(filteredTests);
-                Console.WriteLine($"Observable collection initialized with {TestItems.Count} items.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error while loading tests by category: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                Console.WriteLine($"Error fetching data from API: {ex.Message}");
             }
         }
 
-        private async Task OnTestItemTapped(testCard testItem)
+        //TODO i need must return count and contain data
+        private void LoadDataFromDataStore()
+        {
+            var items = DataStore.Instance.TestItems;
+            if (items != null)
+            {
+                TestItems = new ObservableCollection<TestCardModel>(items);
+                DebugDataStoreInfo = $"Items loaded: {items.Count}";
+            }
+            else
+            {
+                DebugDataStoreInfo = "No items found in DataStore.";
+            }
+            OnPropertyChanged(nameof(TestItems));
+        }
+
+        private async Task OnTestItemTapped(TestCardModel testItem)
         {
             if (testItem != null)
             {
                 await Application.Current.MainPage.Navigation.PushAsync(new SurveyPage(testItem));
             }
-        }   
-
-    }
-
-    public class testCard
-    {
-        [PrimaryKey]
-        public int id { get; set; }
-        public string title { get; set; }
-        public string description { get; set; }
-        public string questions_status { get; set; }
-        public bool is_starred { get; set; }
-        public string category { get; set; }
+        }
     }
 }
