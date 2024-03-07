@@ -11,7 +11,8 @@ namespace MentalTest.Service
     public class ApiService
     {
         private HttpClient _client;
-        private const string BaseUrl = "http://192.168.0.103:7098/api/TestItem/";
+        private const string BaseUrl = "http://192.168.0.104:7098/api/TestItem/";
+        //http://192.168.0.104:7098
         // TODO: Parse API response to model objects
         // TODO: Store parsed data in application memory (consider using a singleton or static class for data storage)
         // TODO: Display stored data in XAML views (use data binding to link your view model with your XAML UI elements)

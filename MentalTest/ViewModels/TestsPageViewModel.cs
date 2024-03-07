@@ -3,12 +3,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Xamarin.Forms;
 using SQLite;
-using MentalTest.Interfaces;
 using System;
 using System.Threading.Tasks;
 using MentalTest.Views;
-using System.Net.Http;
-using Newtonsoft.Json;
 using MentalTest.Service;
 using MentalTest.Models;
 using System.ComponentModel;
@@ -24,6 +21,7 @@ namespace MentalTest.ViewModels
         private readonly SQLiteConnection _database;
         private ApiService _apiService = new ApiService();
         private string _debugDataStoreInfo;
+        private ObservableCollection<TestCardModel> _testItems = new ObservableCollection<TestCardModel>();
 
         private bool _isDataLoading;
         public bool IsDataLoading
@@ -43,12 +41,22 @@ namespace MentalTest.ViewModels
             set
             {
                 _debugDataStoreInfo = value;
-                OnPropertyChanged(nameof(DebugDataStoreInfo));
+                OnPropertyChanged();
             }
         }
 
+        public ObservableCollection<TestCardModel> TestItems
+        {
+            get => _testItems;
+            set
+            {
+                _testItems = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         public bool IsDataLoaded => !IsDataLoading;
-        public ObservableCollection<TestCardModel> TestItems { get; set; } = new ObservableCollection<TestCardModel>();
         public string SelectedCategory { get; set; }
         public Command<TestCardModel> ItemTappedCommand { get; }
 
@@ -91,20 +99,20 @@ namespace MentalTest.ViewModels
             }
         }
 
-        //TODO i need must return count and contain data
         private void LoadDataFromDataStore()
         {
             var items = DataStore.Instance.TestItems;
-            if (items != null)
+            if (items != null && items.Any())
             {
-                TestItems = new ObservableCollection<TestCardModel>(items);
-                DebugDataStoreInfo = $"Items loaded: {items.Count}";
+                TestItems.Clear();
+                foreach (var item in items)
+                {
+                    TestItems.Add(item);
+                }
+
+                DebugDataStoreInfo = $"Loaded items: {TestItems.Count}";
+                OnPropertyChanged(nameof(DebugDataStoreInfo));
             }
-            else
-            {
-                DebugDataStoreInfo = "No items found in DataStore.";
-            }
-            OnPropertyChanged(nameof(TestItems));
         }
 
         private async Task OnTestItemTapped(TestCardModel testItem)
