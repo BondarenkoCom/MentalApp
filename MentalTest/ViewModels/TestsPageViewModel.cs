@@ -13,6 +13,7 @@ using System.Runtime.CompilerServices;
 
 namespace MentalTest.ViewModels
 {
+    //Test description page
     public class TestsPageViewModel : INotifyPropertyChanged
     {
 

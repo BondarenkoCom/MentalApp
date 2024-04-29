@@ -8,11 +8,22 @@ using System.Linq;
 using MentalTest.Interfaces;
 using System.Windows.Input;
 using MentalTest.Models;
+using MentalTest.Service;
+using System.Threading.Tasks;
 
 namespace MentalTest.ViewModels
 {
+    //Questions, counter logic, check answer page
     public class SurveyViewModel : INotifyPropertyChanged
     {
+        public bool IsFirstAnswerSelected => SelectedAnswer == CurrentAnswers[0];
+        public bool IsSecondAnswerSelected => SelectedAnswer == CurrentAnswers[1];
+        public bool IsThirdAnswerSelected => SelectedAnswer == CurrentAnswers[2];
+        public bool IsFourthAnswerSelected => SelectedAnswer == CurrentAnswers[3];
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private QuestionModal _currentQuestion;
+
         private readonly SQLiteConnection _database;
         public ObservableCollection<string> CurrentAnswers =>
           new ObservableCollection<string>(CurrentQuestion?.Answers.Split(';') ?? new string[0]);
@@ -21,10 +32,14 @@ namespace MentalTest.ViewModels
         public int CurrentQuestionIndex { get; set; }
         public QuestionModal CurrentQuestion => Questions.Count > CurrentQuestionIndex ? Questions[CurrentQuestionIndex] : null;
         public ICommand AnswerCommand { get; private set; }
+        public ObservableCollection<string> QuestionsAndAnswers { get; set; } = new ObservableCollection<string>();
 
         public ObservableCollection<string> SelectedAnswers { get; set; } = new ObservableCollection<string>();
 
         private string _selectedAnswer;
+        public int CurrentTestId { get; private set; }
+
+
 
         public string SelectedAnswer
         {
@@ -33,37 +48,42 @@ namespace MentalTest.ViewModels
             {
                 if (_selectedAnswer != value)
                 {
+                    Console.WriteLine($"SelectedAnswer changing from '{_selectedAnswer}' to '{value}'");
                     _selectedAnswer = value;
+
+                    OnPropertyChanged(nameof(SelectedAnswer));
                     OnPropertyChanged(nameof(IsFirstAnswerSelected));
                     OnPropertyChanged(nameof(IsSecondAnswerSelected));
                     OnPropertyChanged(nameof(IsThirdAnswerSelected));
                     OnPropertyChanged(nameof(IsFourthAnswerSelected));
+                    OnPropertyChanged(nameof(QuestionsAndAnswers));
+
+
+                    Console.WriteLine($"IsFirstAnswerSelected: {IsFirstAnswerSelected}");
+                    Console.WriteLine($"IsSecondAnswerSelected: {IsSecondAnswerSelected}");
+                    Console.WriteLine($"IsThirdAnswerSelected: {IsThirdAnswerSelected}");
+                    Console.WriteLine($"IsFourthAnswerSelected: {IsFourthAnswerSelected}");
+
+                    Console.WriteLine("SelectedAnswer change completed and PropertyChanged events fired.");
                 }
             }
         }
 
+
         public SurveyViewModel(int testId)
         {
+            InitializeAsync(testId).ConfigureAwait(false);
+            CurrentTestId = testId;
+
             try
             {
-                var fileHelper = DependencyService.Get<IFileHelper>();
-                var dbPath = fileHelper.GetLocalFilePath("MentalTestDB.db");
                 AnswerCommand = new Command<string>(OnAnswerSelected);
-
-                //ExportDatabase(@"D:\MentalAppSqlDb\MentalTestDB.db").GetAwaiter().GetResult();
-
-                var databaseAssetService = DependencyService.Get<IDatabaseAssetService>();
-                if (databaseAssetService == null)
-                    throw new InvalidOperationException("Failed to retrieve IDatabaseAssetService");
-
-                _database = new SQLiteConnection(dbPath);
-                _database.CreateTable<QuestionModal>();
-                _database.CreateTable<FinalAnswer>();
 
                 Questions = new ObservableCollection<QuestionModal>();
                 AnswerCommand = new Command<string>(OnAnswerSelected);
                 ContinueCommand = new Command(OnContinue);
-                LoadQuestions(testId);
+                //LoadQuestions(testId);
+                //LoadQuestionsFromApi(testId);
                 CurrentQuestionIndex = 0;
             }
             catch (Exception ex)
@@ -73,68 +93,69 @@ namespace MentalTest.ViewModels
                 throw;
             }
         }
-        private void LoadQuestions(int testId)
+
+        public async Task InitializeAsync(int testId)
         {
+            Console.WriteLine("InitializeAsync started.");
             try
             {
-                //_database.Execute("DROP TABLE IF EXISTS Questions");
-                //Console.WriteLine("Попытка удаления таблицы Questions выполнена.");
-
-
-
-                var info = _database.GetTableInfo("Questions");
-                if (!info.Any())
+                var questionsFromApi = await LoadQuestionsFromApi(testId);
+                if (questionsFromApi != null && questionsFromApi.Count > 0)
                 {
-                  //  Console.WriteLine("Таблица Questions успешно удалена.");
-
-                    _database.Execute(@"
-                        CREATE TABLE Questions (
-                            Id INTEGER NOT NULL PRIMARY KEY,
-                            TestId INTEGER NOT NULL,
-                            QuestionText TEXT NOT NULL,
-                            Answers TEXT NOT NULL,
-                            CorrectAnswerIndex INTEGER NOT NULL
-                        )");
+                    Questions = new ObservableCollection<QuestionModal>(questionsFromApi);
+                    CurrentQuestionIndex = 0;
+                    UpdateUI(); 
                 }
-
-                var existingQuestions = _database.Table<QuestionModal>().Where(q => q.TestId == testId).ToList();
-                if (!existingQuestions.Any())
+                else
                 {
-                    //var questionsToInsert = new List<Question>
-                    // {
-                    //     new Question { Id = 1, TestId = 11, QuestionText = "What is the real name of Mercy?", Answers = "Angela Ziegler;Brigitte Lindholm;Fareeha Amari;Mei-Ling Zhou", CorrectAnswerIndex = 0 },
-                    //     new Question { Id = 2, TestId = 11, QuestionText = "What role does Mercy play in a team composition?", Answers = "Support;Tank;Damage;Flex", CorrectAnswerIndex = 0 },
-                    //     new Question { Id = 3, TestId = 11, QuestionText = "What is Mercy's ultimate ability called?", Answers = "Valkyrie;Resurrect;Guardian Angel;Caduceus", CorrectAnswerIndex = 0 },
-                    //     new Question { Id = 4, TestId = 11, QuestionText = "How does Mercy heal her teammates?", Answers = "Caduceus Staff;Biotic Rifle;Repair Pack;Biotic Orb", CorrectAnswerIndex = 0 },
-                    //     new Question { Id = 5, TestId = 11, QuestionText = "Which of these is not a Mercy skin?", Answers = "Witch;Devil;Archangel;Vampire", CorrectAnswerIndex = 3 }
-                    // };
-
-                    var questionsToInsert = new List<QuestionModal>
-                    {
-                        new QuestionModal { Id = 1, TestId = 13, QuestionText = "Какие технологии использует Motoko для улучшения своих боевых способностей?", Answers = "Кибернетические имплантаты;Магия;Биологическое усовершенствование;Химические стимуляторы", CorrectAnswerIndex = 0 },
-                        new QuestionModal { Id = 2, TestId = 13, QuestionText = "Какова философия Motoko относительно человеческого сознания?", Answers = "Оно уникально;Оно может быть цифровым;Оно второстепенно;Оно неизменно", CorrectAnswerIndex = 1 },
-                        new QuestionModal { Id = 3, TestId = 13, QuestionText = "Как Motoko относится к своему кибернетическому телу?", Answers = "Как к инструменту;Как к проклятию;Как к подарку;Как к тюрьме", CorrectAnswerIndex = 0 },
-                        new QuestionModal { Id = 4, TestId = 13, QuestionText = "Какие межличностные отношения у Motoko в Section 9?", Answers = "Строго профессиональные;Дружеские;Романтические;Враждебные", CorrectAnswerIndex = 1 },
-                        new QuestionModal { Id = 5, TestId = 13, QuestionText = "Какова главная цель Motoko в ее борьбе?", Answers = "Защита личных данных;Разгадка корпоративных заговоров;Борьба за права киборгов;Разоблачение государственной коррупции", CorrectAnswerIndex = 3 }
-                    };
-                
-
-
-                    foreach (var question in questionsToInsert)
-                    {
-                        _database.Insert(question);
-                    }
+                    Console.WriteLine("No questions were loaded from the API.");
                 }
-
-                Questions = new ObservableCollection<QuestionModal>(_database.Table<QuestionModal>().Where(q => q.TestId == testId).ToList());
-                LoadFinalAnswers(testId);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Exception in LoadQuestions: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                Console.WriteLine($"Exception in InitializeAsync: {ex.Message}");
             }
         }
+
+
+
+        private void UpdateUI()
+        {
+            OnPropertyChanged(nameof(CurrentQuestion));
+            OnPropertyChanged(nameof(CurrentAnswers)); 
+            Console.WriteLine("UI updated with current question and answers.");
+        }
+
+        private async Task<List<QuestionModal>> LoadQuestionsFromApi(int testId)
+        {
+            Console.WriteLine($"Starting to fetch questions for test ID: {testId}");
+            List<QuestionModal> questions = null;
+
+            try
+            {
+                var apiService = new ApiService();
+                questions = await apiService.GetQuestionsByTestIdAsync(testId);
+
+                if (questions != null && questions.Count > 0)
+                {
+                    Console.WriteLine($"Received {questions.Count} questions for test ID {testId}.");
+                    DataStore.Instance.SaveQuestionsForTest(questions, testId);
+                    Console.WriteLine($"Saved questions to DataStore for test ID {testId}.");
+                }
+                else
+                {
+                    Console.WriteLine("No questions were retrieved from the API.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception in LoadQuestionsFromApi: {ex}");
+            }
+
+            return questions;
+        }
+
+
         private void LoadFinalAnswers(int testId)
         {
             string createFinalAnswersTableQuery = @"
@@ -168,67 +189,41 @@ namespace MentalTest.ViewModels
                 }
             }
         }
+
         private void OnContinue()
         {
             if (SelectedAnswer != null)
             {
                 SelectedAnswers.Add(SelectedAnswer);
-                OnPropertyChanged(nameof(SelectedAnswers));
-            }
-
-            if (CurrentQuestionIndex < Questions.Count - 1)
-            {
-                CurrentQuestionIndex++;
-                SelectedAnswer = null;
-                OnPropertyChanged(nameof(CurrentQuestion));
-                OnPropertyChanged(nameof(CurrentAnswers));
-
-                OnPropertyChanged(nameof(IsFirstAnswerSelected));
-                OnPropertyChanged(nameof(IsSecondAnswerSelected));
-                OnPropertyChanged(nameof(IsThirdAnswerSelected));
-                OnPropertyChanged(nameof(IsFourthAnswerSelected));
-            }
-            else
-            {
-                FinishTest();
+                if (CurrentQuestionIndex < Questions.Count - 1)
+                {
+                    CurrentQuestionIndex++;
+                    SelectedAnswer = null;  // Сброс выбранного ответа
+                    UpdateUI();  // Обновление вопроса и ответов
+                }
+                else
+                {
+                    FinishTest();  // Обработка завершения теста
+                }
             }
         }
-        private void FinishTest()
+
+
+        private async void FinishTest()
         {
-            // TODO: Необходимо изменить логику подсчёта правильных ответов, чтобы обрабатывать непоследовательные Id вопросов.
-            // Рекомендуется использовать Dictionary<int, string> для SelectedAnswers вместо ObservableCollection<string>.
-            var results = new Dictionary<string, int>();
-            foreach (var answer in SelectedAnswers)
-            {
-                if (!results.ContainsKey(answer))
-                    results[answer] = 0;
-                results[answer]++;
-            }
+            Console.WriteLine("FinishTest started.");
 
-            var totalAnswers = Questions.Count;
-            var correctAnswersCount = Questions.Where(q => SelectedAnswers[q.Id - 1] == q.Answers.Split(';')[q.CorrectAnswerIndex]).Count();
+            var apiService = new ApiService();
+            var finalAnswers = await apiService.GetFinalAnswersByTestIdAsync(CurrentTestId);
+            var finalAnswer = finalAnswers.FirstOrDefault(fa => fa.TestId == CurrentTestId);
 
-            var percentage = (correctAnswersCount / (float)totalAnswers) * 100;
-
-            string scoreRange = percentage >= 90 ? "High" : percentage >= 50 ? "Medium" : "Low";
-
-            var finalResult = _database.Table<FinalAnswer>()
-                                .FirstOrDefault(fa => fa.TestId == CurrentQuestion.TestId && fa.ScoreRange == scoreRange)?.ResultText;
-
-            string finalResultMessage = finalResult ?? "Result is not found.";
+            string finalResultMessage = finalAnswer?.ResultText ?? "Result is not found.";
             MessagingCenter.Send(this, "FinishTest", finalResultMessage);
+
+            Console.WriteLine("FinishTest completed.");
         }
 
 
-
-
-
-        public bool IsFirstAnswerSelected => SelectedAnswer == CurrentAnswers[0];
-        public bool IsSecondAnswerSelected => SelectedAnswer == CurrentAnswers[1];
-        public bool IsThirdAnswerSelected => SelectedAnswer == CurrentAnswers[2];
-        public bool IsFourthAnswerSelected => SelectedAnswer == CurrentAnswers[3];
-
-        public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -236,11 +231,10 @@ namespace MentalTest.ViewModels
 
         private void OnAnswerSelected(string answer)
         {
-            if (!string.IsNullOrEmpty(answer))
-            {
-                SelectedAnswer = answer;
-            }
+            SelectedAnswer = answer;
         }
+
+       
     }
 
     public class FinalAnswer

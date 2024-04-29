@@ -11,8 +11,8 @@ namespace MentalTest.Service
     public class ApiService
     {
         private HttpClient _client;
-        private const string BaseUrl = "http://192.168.0.104:7098/api/TestItem/";
-        //http://192.168.0.104:7098
+        private const string BaseUrl = "http://192.168.0.104:5003/api/TestItem/";
+        //http://192.168.0.104:5003
         // TODO: Parse API response to model objects
         // TODO: Store parsed data in application memory (consider using a singleton or static class for data storage)
         // TODO: Display stored data in XAML views (use data binding to link your view model with your XAML UI elements)
@@ -29,15 +29,16 @@ namespace MentalTest.Service
             try
             {
                 Console.WriteLine("Initiating request to API...");
-                Console.WriteLine($"chosed category - {category}");
-        
+                Console.WriteLine($"Chosen category - {category}");
+
                 var json = await _client.GetStringAsync($"{BaseUrl}testcards/category/{category}");
                 Console.WriteLine("Response from API received.");
-                Console.WriteLine($"Response JSON: {json}"); // Outputting the received JSON to the console
-        
+                Console.WriteLine($"Response JSON: {json}");
+
                 var testItems = JsonConvert.DeserializeObject<List<TestCardModel>>(json);
                 DataStore.Instance.SaveTestItems(testItems);
-                Console.WriteLine($"Deserialized {testItems.Count} testCard objects."); // Outputting the number of objects after deserialization
+                Console.WriteLine($"Deserialized {testItems.Count} testCard objects and saved in DataStore.");
+
                 return testItems;
             }
             catch (Exception ex)
@@ -46,75 +47,91 @@ namespace MentalTest.Service
                 throw;
             }
         }
-        //TODO понять что не так с этим методом, кажется что он пытается подцепить вопросы с testid 14  и запросить их, и поле этого валится все.ну карточки пустые
-        //public async Task<List<TestCardModel>> GetTestItemsByCategoryAsync(string category)
-        //{
-        //    try
-        //    {
-        //        Console.WriteLine("Initiating request to API...");
-        //        Console.WriteLine($"Chosen category - {category}");
-        //
-        //        var json = await _client.GetStringAsync($"{BaseUrl}testcards/category/{category}");
-        //        Console.WriteLine("Response from API received.");
-        //        Console.WriteLine($"Response JSON: {json}");
-        //
-        //        var testItems = JsonConvert.DeserializeObject<List<TestCardModel>>(json);
-        //        foreach (var testItem in testItems)
-        //        {
-        //            var questions = await GetQuestionsByTestIdAsync(testItem.id);
-        //            DataStore.Instance.SaveQuestionsForTest(questions, testItem.id);
-        //        }
-        //        DataStore.Instance.SaveTestItems(testItems);
-        //
-        //        Console.WriteLine("Test items stored in DataStore:");
-        //        foreach (var testItem in DataStore.Instance.TestItems)
-        //        {
-        //            Console.WriteLine($"ID: {testItem.id}, Title: {testItem.title}, Description: {testItem.description}");
-        //        }
-        //
-        //        Console.WriteLine("Questions for each test stored in DataStore:");
-        //        foreach (var kvp in DataStore.Instance.TestQuestions)
-        //        {
-        //            Console.WriteLine($"Test ID: {kvp.Key}");
-        //            foreach (var question in kvp.Value)
-        //            {
-        //                Console.WriteLine($"Question ID: {question.Id}, Text: {question.QuestionText}");
-        //            }
-        //        }
-        //
-        //        Console.WriteLine($"Deserialized {testItems.Count} testCard objects.");
-        //        return testItems;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine($"Error during API request: {ex.Message}");
-        //        throw;
-        //    }
-        //}
-
-
 
         public async Task<List<QuestionModal>> GetQuestionsByTestIdAsync(int testId)
         {
             try
             {
                 Console.WriteLine($"Fetching questions for test ID: {testId}");
+                var response = await _client.GetAsync($"{BaseUrl}questions/testid/{testId}");
 
-                var json = await _client.GetStringAsync($"{BaseUrl}questions/testid/{testId}");
-                Console.WriteLine($"Response from API for questions: {json}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Response from API for questions: {json}");
 
-                var questions = JsonConvert.DeserializeObject<List<QuestionModal>>(json);
+                    var questions = JsonConvert.DeserializeObject<List<QuestionModal>>(json);
+                    Console.WriteLine($"Successfully deserialized {questions.Count} questions for test ID {testId}.");
 
-                DataStore.Instance.SaveQuestionsForTest(questions, testId);
-                return questions;
+                    DataStore.Instance.SaveQuestionsForTest(questions, testId);
+                    Console.WriteLine("Questions saved to DataStore.");
+
+                    return questions;
+                }
+                else
+                {
+                    Console.WriteLine($"API call failed: {response.StatusCode}");
+                    throw new HttpRequestException($"Request to API failed with status code {response.StatusCode}");
+                }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error fetching questions from API: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
+                }
                 throw;
             }
         }
 
+        public async Task<List<FinalAnswer>> GetFinalAnswersByTestIdAsync(int testId)
+        {
+            try
+            {
+                Console.WriteLine($"Fetching final answers for test ID: {testId}");
+                var response = await _client.GetAsync($"{BaseUrl}finalanswers/{testId}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Response from API for final answers: {json}");
+
+                    var finalAnswers = JsonConvert.DeserializeObject<List<FinalAnswer>>(json);
+                    Console.WriteLine($"Successfully deserialized {finalAnswers.Count} final answers for test ID {testId}.");
+
+                    return finalAnswers;
+                }
+                else
+                {
+                    Console.WriteLine($"API call failed: {response.StatusCode}");
+                    throw new HttpRequestException($"Request to API failed with status code {response.StatusCode}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching final answers from API: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
+                }
+                throw;
+            }
+        }
+
+
+        public void ClearDataStore()
+        {
+            DataStore.Instance.SaveTestItems(new List<TestCardModel>());
+
+            var testIds = new List<int>(DataStore.Instance.TestQuestions.Keys);
+            foreach (var testId in testIds)
+            {
+                DataStore.Instance.SaveQuestionsForTest(new List<QuestionModal>(), testId);
+            }
+
+            Console.WriteLine("DataStore has been cleared.");
+        }
 
     }
 }

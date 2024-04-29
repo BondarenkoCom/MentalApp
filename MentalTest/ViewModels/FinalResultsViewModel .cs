@@ -3,6 +3,7 @@ using Xamarin.Forms;
 
 namespace MentalTest.ViewModels
 {
+    //Result test page
     public class FinalResultsViewModel : INotifyPropertyChanged
     {
         private string _finalResultMessage;

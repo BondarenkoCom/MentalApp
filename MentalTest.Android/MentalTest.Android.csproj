@@ -65,7 +65,7 @@
     <Compile Include="Services\DatabaseAssetService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="Assets\MentalTestDB.db" />
+    <AndroidAsset Include="Assets\DummyMentalTestDB.db" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />

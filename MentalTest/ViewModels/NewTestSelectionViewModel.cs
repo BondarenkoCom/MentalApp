@@ -3,6 +3,7 @@ using Xamarin.Forms;
 
 namespace MentalTest.ViewModels
 {
+    //Category page
     public class NewTestSelectionViewModel
     {
         public ObservableCollection<TestType> TestTypes { get; set; }
