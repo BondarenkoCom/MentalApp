@@ -213,15 +213,42 @@ namespace MentalTest.ViewModels
         {
             Console.WriteLine("FinishTest started.");
 
+            var correctCount = CalculateCorrectAnswers();
+            var totalQuestions = Questions.Count;
+            var scorePercentage = (double)correctCount / totalQuestions * 100;
+            string scoreRange = DetermineScoreRange(scorePercentage);
+
             var apiService = new ApiService();
             var finalAnswers = await apiService.GetFinalAnswersByTestIdAsync(CurrentTestId);
-            var finalAnswer = finalAnswers.FirstOrDefault(fa => fa.TestId == CurrentTestId);
+            var finalAnswer = finalAnswers.FirstOrDefault(fa => fa.TestId == CurrentTestId && fa.ScoreRange == scoreRange);
 
-            string finalResultMessage = finalAnswer?.ResultText ?? "Result is not found.";
+            string finalResultMessage = finalAnswer?.ResultText ?? "Result not found.";
             MessagingCenter.Send(this, "FinishTest", finalResultMessage);
 
             Console.WriteLine("FinishTest completed.");
         }
+
+        private int CalculateCorrectAnswers()
+        {
+            int correctAnswers = 0;
+            for (int i = 0; i < Questions.Count; i++)
+            {
+                if (SelectedAnswers[i] == Questions[i].Answers.Split(';')[Questions[i].CorrectAnswerIndex])
+                    correctAnswers++;
+            }
+            return correctAnswers;
+        }
+
+        private string DetermineScoreRange(double scorePercentage)
+        {
+            if (scorePercentage >= 90)
+                return "High";
+            else if (scorePercentage >= 50)
+                return "Medium";
+            else
+                return "Low";
+        }
+
 
 
         protected virtual void OnPropertyChanged(string propertyName)
