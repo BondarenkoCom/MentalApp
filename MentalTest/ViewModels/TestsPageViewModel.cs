@@ -110,11 +110,10 @@ namespace MentalTest.ViewModels
                 {
                     TestItems.Add(item);
                 }
-
                 DebugDataStoreInfo = $"Loaded items: {TestItems.Count}";
-                OnPropertyChanged(nameof(DebugDataStoreInfo));
             }
         }
+
 
         private async Task OnTestItemTapped(TestCardModel testItem)
         {
@@ -123,5 +122,6 @@ namespace MentalTest.ViewModels
                 await Application.Current.MainPage.Navigation.PushAsync(new SurveyPage(testItem));
             }
         }
+
     }
 }

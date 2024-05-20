@@ -5,18 +5,18 @@
              BackgroundColor="#FAFAFA"
              NavigationPage.HasNavigationBar="False">
     <ContentPage.Content>
-        <StackLayout>
+        <StackLayout Padding="20">
             <Label Text="Loading data..." 
                    HorizontalOptions="Center" 
                    IsVisible="{Binding IsDataLoading}" />
             <Label Text="{Binding DebugDataStoreInfo}" 
-       TextColor="Red"
-       HorizontalOptions="Center" />
+                   TextColor="Red"
+                   HorizontalOptions="Center" />
 
             <ListView ItemsSource="{Binding TestItems}"
                       ItemSelected="ListView_OnItemSelected"
                       SeparatorVisibility="None"
-                      RowHeight="180"
+                      RowHeight="220"
                       BackgroundColor="Transparent"
                       IsVisible="{Binding IsDataLoaded}">
                 <ListView.ItemTemplate>
@@ -44,12 +44,12 @@
                                              HeightRequest="2"
                                              Grid.RowSpan="2"/>
                                     <Label Text="{Binding title}" 
-                                             FontSize="20" 
-                                             FontAttributes="Bold" 
-                                             TextColor="#394758" 
-                                             HorizontalTextAlignment="Start"
-                                             Margin="20,10" 
-                                             Grid.Row="1"/>
+                                           FontSize="20" 
+                                           FontAttributes="Bold" 
+                                           TextColor="#394758" 
+                                           HorizontalTextAlignment="Start"
+                                           Margin="20,10" 
+                                           Grid.Row="1"/>
                                 </Grid>
                             </Frame>
                         </ViewCell>
