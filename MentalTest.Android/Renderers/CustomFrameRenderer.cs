@@ -18,9 +18,11 @@ namespace MentalTest.Droid.Renderers
         {
             base.OnElementChanged(e);
 
-            if (e.NewElement != null && this != null)
+            if (e.NewElement != null)
             {
+                UpdateBackground();
                 UpdateCornerRadius();
+                UpdateShadow();
             }
         }
 
@@ -31,6 +33,24 @@ namespace MentalTest.Droid.Renderers
             if (e.PropertyName == nameof(CustomFrame.CornerRadius) || e.PropertyName == nameof(CustomFrame))
             {
                 UpdateCornerRadius();
+            }
+
+            if (e.PropertyName == nameof(Frame.HasShadow) || e.PropertyName == nameof(Frame))
+            {
+                UpdateShadow();
+            }
+        }
+
+        private void UpdateBackground()
+        {
+            if (this.Element.BackgroundColor != Xamarin.Forms.Color.Default)
+            {
+                var color = this.Element.BackgroundColor.ToAndroid();
+                this.SetBackgroundColor(color);
+            }
+            else
+            {
+                this.SetBackground(null);
             }
         }
 
@@ -60,7 +80,14 @@ namespace MentalTest.Droid.Renderers
                 };
 
                 backgroundGradient.SetCornerRadii(radii);
+                this.SetBackground(backgroundGradient);
             }
+        }
+
+        private void UpdateShadow()
+        {
+            Elevation = 20;
+            TranslationZ = 10;
         }
     }
 }

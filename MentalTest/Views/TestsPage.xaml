@@ -1,61 +1,109 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:MentalTest.Views"
              x:Class="MentalTest.Views.TestsPage"
              BackgroundColor="#FAFAFA"
              NavigationPage.HasNavigationBar="False">
     <ContentPage.Content>
-        <StackLayout Padding="20">
-            <Label Text="Loading data..." 
-                   HorizontalOptions="Center" 
-                   IsVisible="{Binding IsDataLoading}" />
-            <Label Text="{Binding DebugDataStoreInfo}" 
-                   TextColor="Red"
-                   HorizontalOptions="Center" />
+        <Grid>
+            <Grid RowDefinitions="Auto, *">
+                <StackLayout Orientation="Horizontal"
+                             BackgroundColor="White"
+                             HeightRequest="60"
+                             Padding="10"
+                             VerticalOptions="Start">
+                    <ImageButton Source="back_arrow.png"
+                                 HorizontalOptions="Start"
+                                 VerticalOptions="Center"
+                                 WidthRequest="36"
+                                 HeightRequest="36"
+                                 BackgroundColor="Transparent"
+                                 Rotation="180"
+                                 Clicked="OnBackButtonClicked" />
+                    <Label Text="Category Name"
+                           FontSize="24"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Start"
+                           VerticalOptions="Center"
+                           TextColor="#394758"
+                           Margin="10,0,0,0" />
+                </StackLayout>
 
-            <ListView ItemsSource="{Binding TestItems}"
-                      ItemSelected="ListView_OnItemSelected"
-                      SeparatorVisibility="None"
-                      RowHeight="220"
-                      BackgroundColor="Transparent"
-                      IsVisible="{Binding IsDataLoaded}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <Frame BorderColor="#D5D5D5"
-                                   CornerRadius="12"
-                                   Padding="0"
-                                   Margin="20,5">
-                                <Grid BackgroundColor="White">
-                                    <BoxView Color="LightSkyBlue"
-                                             VerticalOptions="Start"
-                                             HeightRequest="110"
-                                             Grid.RowSpan="2"/>
-                                    <Label Text="{Binding description}" 
-                                           FontSize="16" 
-                                           Margin="20,10" 
-                                           TextColor="#394758" 
-                                           MaxLines="4"
-                                           LineBreakMode="TailTruncation" 
-                                           Grid.Row="0"/>
-                                    <BoxView Color="Black"
-                                             VerticalOptions="Center"
-                                             HorizontalOptions="FillAndExpand"
-                                             HeightRequest="2"
-                                             Grid.RowSpan="2"/>
-                                    <Label Text="{Binding title}" 
-                                           FontSize="20" 
-                                           FontAttributes="Bold" 
-                                           TextColor="#394758" 
-                                           HorizontalTextAlignment="Start"
-                                           Margin="20,10" 
-                                           Grid.Row="1"/>
-                                </Grid>
-                            </Frame>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </StackLayout>
+                <StackLayout Padding="20"
+                             VerticalOptions="FillAndExpand"
+                             Margin="0,70,0,0"
+                             Grid.Row="1">
+                    <Label Text="Loading data..." 
+                           HorizontalOptions="Center" 
+                           IsVisible="{Binding IsDataLoading}" />
+
+                    <ListView ItemsSource="{Binding TestItems}"
+                              ItemSelected="ListView_OnItemSelected"
+                              SeparatorVisibility="None"
+                              RowHeight="280"
+                              BackgroundColor="Transparent"
+                              IsVisible="{Binding IsDataLoaded}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <local:CustomFrame BorderColor="#D5D5D5"
+                                                       CornerRadius="20"
+                                                       Padding="0"
+                                                       Margin="18,10"
+                                                       HeightRequest="280"
+                                                       WidthRequest="377"
+                                                       BackgroundColor="White"
+                                                       HasShadow="True">
+                                        <Grid>
+                                            <Grid BackgroundColor="#E9EDF3" Margin="0,0,0,2">
+                                                <Label Text="{Binding description}" 
+                                                       FontSize="16" 
+                                                       Margin="20,10" 
+                                                       TextColor="#394758" 
+                                                       MaxLines="4"
+                                                       LineBreakMode="TailTruncation" 
+                                                       VerticalOptions="Start"
+                                                       HorizontalOptions="FillAndExpand"/>
+                                            </Grid>
+                                            <BoxView Color="LightGray"
+                                                     HeightRequest="2"
+                                                     HorizontalOptions="FillAndExpand"
+                                                     VerticalOptions="End"/>
+                                            <Grid VerticalOptions="End" HorizontalOptions="FillAndExpand" HeightRequest="96" BackgroundColor="White">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+                                                <Label Text="{Binding title}" 
+                                                       FontSize="20" 
+                                                       FontAttributes="Bold" 
+                                                       TextColor="#394758" 
+                                                       HorizontalTextAlignment="Start"
+                                                       VerticalOptions="Center"
+                                                       Margin="20,10,0,0" 
+                                                       Grid.Row="0"/>
+                                                <Label Text="0/18 Questions" 
+                                                       FontSize="16" 
+                                                       TextColor="Gray" 
+                                                       HorizontalTextAlignment="Start" 
+                                                       VerticalOptions="Center"  
+                                                       Margin="20,0,0,10" 
+                                                       Grid.Row="1"/>
+                                                <Image Source="star_icon.png"
+                                                       HorizontalOptions="End"
+                                                       VerticalOptions="Center"
+                                                       Margin="0,0,20,0"
+                                                       Grid.Row="0"/>
+                                            </Grid>
+                                        </Grid>
+                                    </local:CustomFrame>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </StackLayout>
+            </Grid>
+        </Grid>
     </ContentPage.Content>
 </ContentPage>

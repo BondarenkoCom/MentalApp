@@ -17,7 +17,6 @@ namespace MentalTest.Views
             InitializeViewModelAsync(categoryName);
         }
 
-
         private async void InitializeViewModelAsync(string categoryName)
         {
             Console.WriteLine("Initializing TestsPage ViewModel...");
@@ -40,6 +39,11 @@ namespace MentalTest.Views
             {
                 Console.WriteLine("Item selection cleared.");
             }
+        }
+
+        private void OnBackButtonClicked(object sender, EventArgs e)
+        {
+            Navigation.PopAsync();
         }
     }
 }
