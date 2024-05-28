@@ -1,6 +1,7 @@
 ﻿using MentalTest.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq; // Добавьте этот using для использования LINQ методов
 
 namespace MentalTest.Service
 {
@@ -18,6 +19,7 @@ namespace MentalTest.Service
             TestItems = items;
             DebugPrintAllData();
         }
+
 
         public void SaveQuestionsForTest(List<QuestionModal> questions, int testId)
         {
@@ -40,7 +42,6 @@ namespace MentalTest.Service
                 Console.WriteLine($"Question ID: {question.Id}, Question Text: {question.QuestionText}, Answers: {question.Answers}, Correct Answer Index: {question.CorrectAnswerIndex}");
             }
         }
-
 
         public List<QuestionModal> GetQuestionsForTest(int testId)
         {
@@ -67,7 +68,10 @@ namespace MentalTest.Service
             }
         }
 
-
+        public int GetTestCountByCategory(string category)
+        {
+            return TestItems?.Count(test => test.category == category) ?? 0;
+        }
 
         public void DebugPrintAllData()
         {

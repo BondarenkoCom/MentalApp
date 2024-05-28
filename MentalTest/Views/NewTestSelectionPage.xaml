@@ -5,7 +5,6 @@
              BackgroundColor="#FAFAFA"
              NavigationPage.HasNavigationBar="False">
     <ContentPage.Content>
-        
         <RelativeLayout>
             <Button Text="Debug page"
                     Clicked="DebugPageButton_Clicked"/>
@@ -37,18 +36,23 @@
                                          TextColor="#394758"
                                          VerticalTextAlignment="Center"
                                          HorizontalOptions="StartAndExpand"/>
-                                    <Label Text="{Binding TestCount}"
-                                        FontFamily="Montserrat"
-                                        FontSize="16"
-                                        TextColor="#394758"
-                                        VerticalTextAlignment="Center"
-                                        HorizontalOptions="End"
-                                        Margin="20,0,0,0"/>
+                                    <StackLayout Orientation="Horizontal" VerticalOptions="Center" HorizontalOptions="End">
+                                        <Label Text="{Binding TestCount}"
+                                               FontFamily="Montserrat"
+                                               FontSize="16"
+                                               TextColor="#394758"
+                                               VerticalTextAlignment="Center"/>
+                                        <Label Text="Tests"
+                                               FontFamily="Montserrat"
+                                               FontSize="16"
+                                               TextColor="#394758"
+                                               VerticalTextAlignment="Center"
+                                               Margin="5,0,0,0"/>
+                                    </StackLayout>
                                 </StackLayout>
                             </Frame>
                         </ViewCell>
                     </DataTemplate>
-                    
                 </ListView.ItemTemplate>
             </ListView>
         </RelativeLayout>

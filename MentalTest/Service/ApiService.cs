@@ -36,7 +36,6 @@ namespace MentalTest.Service
                 Console.WriteLine($"Response JSON: {json}");
 
                 var testItems = JsonConvert.DeserializeObject<List<TestCardModel>>(json);
-                DataStore.Instance.SaveTestItems(testItems);
                 Console.WriteLine($"Deserialized {testItems.Count} testCard objects and saved in DataStore.");
 
                 return testItems;
@@ -47,6 +46,7 @@ namespace MentalTest.Service
                 throw;
             }
         }
+
 
         public async Task<List<QuestionModal>> GetQuestionsByTestIdAsync(int testId)
         {
@@ -116,6 +116,20 @@ namespace MentalTest.Service
                     Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
                 }
                 throw;
+            }
+        }
+
+        public async Task<int> GetTestCountByCategoryAsync(string category)
+        {
+            try
+            {
+                await GetTestItemsByCategoryAsync(category);
+                return DataStore.Instance.GetTestCountByCategory(category);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error during API request: {ex.Message}");
+                return 0; // В случае ошибки возвращаем 0
             }
         }
 

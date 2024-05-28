@@ -21,7 +21,7 @@ namespace MentalTest.ViewModels
 
         private readonly SQLiteConnection _database;
         private ApiService _apiService = new ApiService();
-        private string _debugDataStoreInfo;
+        private string _debugDataStoreInfo;  
         private ObservableCollection<TestCardModel> _testItems = new ObservableCollection<TestCardModel>();
 
         private bool _isDataLoading;
