@@ -11,7 +11,7 @@ namespace MentalTest.Views
         private TestsPageViewModel _viewModel;
 
         public TestsPage(string categoryName)
-        {
+        { 
             Console.WriteLine($"TestsPage constructor called with category: {categoryName}");
             InitializeComponent();
             InitializeViewModelAsync(categoryName);

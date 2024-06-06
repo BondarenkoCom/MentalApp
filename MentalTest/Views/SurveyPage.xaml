@@ -3,25 +3,100 @@
              x:Class="MentalTest.Views.SurveyPage"
              Title="{Binding CurrentQuestion.QuestionText}">
     <ContentPage.Content>
-        <StackLayout Padding="10">
-            <Label Text="{Binding CurrentQuestion.QuestionText}"
-                   FontAttributes="Bold"
-                   HorizontalOptions="Center" 
-                   VerticalOptions="Start" />
+        <AbsoluteLayout>
+            <!-- Background shapes -->
+            <Image Source="VectorBlue.png"
+                   AbsoluteLayout.LayoutBounds="0.5, 0.5, 1, 1"
+                   AbsoluteLayout.LayoutFlags="All"
+                   Aspect="AspectFill" />
+            <Image Source="VectorOrange.png"
+                   AbsoluteLayout.LayoutBounds="0.5, 1.2, 1, 1"
+                   AbsoluteLayout.LayoutFlags="All"
+                   Aspect="AspectFill" />
 
-            <ListView ItemsSource="{Binding CurrentAnswers}"
-                      SelectedItem="{Binding SelectedAnswer}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <TextCell Text="{Binding .}" />
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+            <!-- Content -->
+            <Grid AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-            <Button Command="{Binding ContinueCommand}" 
-                    Text="Continue" 
-                    HorizontalOptions="FillAndExpand"
-                    IsEnabled="{Binding SelectedAnswer}" />
-        </StackLayout>
+                <StackLayout Orientation="Horizontal"
+                             BackgroundColor="White"
+                             HeightRequest="50"
+                             Padding="10"
+                             VerticalOptions="Start">
+                    <ImageButton Source="back_arrow.png"
+                                 HorizontalOptions="Start"
+                                 VerticalOptions="Center"
+                                 WidthRequest="36"
+                                 HeightRequest="36"
+                                 BackgroundColor="Transparent"
+                                 Rotation="180"
+                                 Clicked="OnBackButtonClicked" />
+                    <Label Text="Previous question"
+                           FontSize="16"
+                           HorizontalOptions="CenterAndExpand"
+                           VerticalOptions="Center"
+                           TextColor="#394758" />
+                </StackLayout>
+
+                <StackLayout Padding="20"
+                             VerticalOptions="FillAndExpand"
+                             Grid.Row="1">
+                    <Label Text="2 of 4 questions"
+                           FontSize="14"
+                           TextColor="#394758"
+                           HorizontalOptions="Center" />
+                    <Label Text="{Binding CurrentQuestion.QuestionText}"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center" 
+                           VerticalOptions="Start"
+                           TextColor="#394758"
+                           Margin="0,20,0,20" />
+
+                    <ListView ItemsSource="{Binding CurrentAnswers}"
+                              SelectedItem="{Binding SelectedAnswer}"
+                              SeparatorVisibility="None"
+                              BackgroundColor="Transparent">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand" Padding="0">
+                                        <Frame BorderColor="#D5D5D5"
+                                               CornerRadius="30"
+                                               Padding="15"
+                                               Margin="10,10,10,15"
+                                               BackgroundColor="White"
+                                               HasShadow="True"
+                                               HeightRequest="80">
+                                            <Label Text="{Binding .}"
+                                                   FontSize="16"
+                                                   TextColor="#394758"
+                                                   VerticalTextAlignment="Center"
+                                                   HorizontalOptions="CenterAndExpand"/>
+                                        </Frame>
+                                    </StackLayout>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </StackLayout>
+
+                <Button Command="{Binding ContinueCommand}" 
+                        Text="Continue" 
+                        HorizontalOptions="FillAndExpand"
+                        VerticalOptions="End"
+                        HeightRequest="50"
+                        Margin="20,10"
+                        BackgroundColor="#4A90E2"
+                        TextColor="White"
+                        CornerRadius="25"
+                        Grid.Row="2"
+                        IsEnabled="{Binding SelectedAnswer}" />
+            </Grid>
+        </AbsoluteLayout>
     </ContentPage.Content>
 </ContentPage>

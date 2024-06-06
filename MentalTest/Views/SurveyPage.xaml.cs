@@ -27,5 +27,11 @@ namespace MentalTest.Views
 
             Console.WriteLine("SurveyPage constructor completed.");
         }
+
+        private void OnBackButtonClicked(object sender, EventArgs e)
+        {
+            // Здесь вы можете добавить логику для обработки нажатия на кнопку назад
+            Navigation.PopAsync();
+        }
     }
 }
