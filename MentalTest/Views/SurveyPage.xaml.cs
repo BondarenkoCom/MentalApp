@@ -13,6 +13,7 @@ namespace MentalTest.Views
 
         public SurveyPage(TestCardModel test)
         {
+            NavigationPage.SetHasNavigationBar(this, false);
             InitializeComponent();
             Console.WriteLine("SurveyPage constructor started.");
 
@@ -30,7 +31,6 @@ namespace MentalTest.Views
 
         private void OnBackButtonClicked(object sender, EventArgs e)
         {
-            // Здесь вы можете добавить логику для обработки нажатия на кнопку назад
             Navigation.PopAsync();
         }
     }

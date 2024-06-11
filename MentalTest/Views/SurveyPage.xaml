@@ -1,16 +1,18 @@
 ﻿<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:MentalTest.Views"
              x:Class="MentalTest.Views.SurveyPage"
-             Title="{Binding CurrentQuestion.QuestionText}">
+             Title="{Binding CurrentQuestion.QuestionText}"
+             NavigationPage.HasNavigationBar="False">
     <ContentPage.Content>
         <AbsoluteLayout>
             <!-- Background shapes -->
             <Image Source="VectorBlue.png"
-                   AbsoluteLayout.LayoutBounds="0.5, 0.5, 1, 1"
+                   AbsoluteLayout.LayoutBounds="0.5, 1.2, 1, 1"
                    AbsoluteLayout.LayoutFlags="All"
                    Aspect="AspectFill" />
             <Image Source="VectorOrange.png"
-                   AbsoluteLayout.LayoutBounds="0.5, 1.2, 1, 1"
+                   AbsoluteLayout.LayoutBounds="0.5, 1.5, 1, 1"
                    AbsoluteLayout.LayoutFlags="All"
                    Aspect="AspectFill" />
 
@@ -22,11 +24,13 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
+                <!-- Header -->
                 <StackLayout Orientation="Horizontal"
                              BackgroundColor="White"
                              HeightRequest="50"
                              Padding="10"
-                             VerticalOptions="Start">
+                             VerticalOptions="Start"
+                             Grid.Row="0">
                     <ImageButton Source="back_arrow.png"
                                  HorizontalOptions="Start"
                                  VerticalOptions="Center"
@@ -35,56 +39,68 @@
                                  BackgroundColor="Transparent"
                                  Rotation="180"
                                  Clicked="OnBackButtonClicked" />
-                    <Label Text="Previous question"
-                           FontSize="16"
-                           HorizontalOptions="CenterAndExpand"
+                    <Label Text="Back to Test Cards"
+                           FontSize="24"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Start"
                            VerticalOptions="Center"
-                           TextColor="#394758" />
+                           TextColor="#394758"
+                           Margin="10,0,0,0" />
                 </StackLayout>
 
+                <!-- Content -->
                 <StackLayout Padding="20"
                              VerticalOptions="FillAndExpand"
                              Grid.Row="1">
-                    <Label Text="2 of 4 questions"
-                           FontSize="14"
+                    <Label Text="{Binding QuestionCounterText}"
+                           FontSize="16"
                            TextColor="#394758"
                            HorizontalOptions="Center" />
-                    <Label Text="{Binding CurrentQuestion.QuestionText}"
-                           FontSize="20"
-                           FontAttributes="Bold"
-                           HorizontalOptions="Center" 
-                           VerticalOptions="Start"
-                           TextColor="#394758"
-                           Margin="0,20,0,20" />
 
-                    <ListView ItemsSource="{Binding CurrentAnswers}"
-                              SelectedItem="{Binding SelectedAnswer}"
-                              SeparatorVisibility="None"
-                              BackgroundColor="Transparent">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <ViewCell>
-                                    <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand" Padding="0">
-                                        <Frame BorderColor="#D5D5D5"
-                                               CornerRadius="30"
-                                               Padding="15"
-                                               Margin="10,10,10,15"
-                                               BackgroundColor="White"
-                                               HasShadow="True"
-                                               HeightRequest="80">
-                                            <Label Text="{Binding .}"
-                                                   FontSize="16"
-                                                   TextColor="#394758"
-                                                   VerticalTextAlignment="Center"
-                                                   HorizontalOptions="CenterAndExpand"/>
-                                        </Frame>
-                                    </StackLayout>
-                                </ViewCell>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
+                    <!-- Question and Answers -->
+                    <StackLayout Spacing="20"
+                                 VerticalOptions="FillAndExpand">
+                        <Label Text="{Binding CurrentQuestion.QuestionText}"
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center" 
+                               VerticalOptions="Start"
+                               TextColor="#394758"
+                               Margin="0,20,0,20" />
+
+                        <ListView ItemsSource="{Binding CurrentAnswers}"
+                                  SelectedItem="{Binding SelectedAnswer}"
+                                  SeparatorVisibility="None"
+                                  BackgroundColor="Transparent"
+                                  VerticalOptions="FillAndExpand"
+                                  Margin="0,20,0,0">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <ViewCell>
+                                        <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand" Padding="0">
+                                            <Frame BorderColor="#b76e79"
+                                                   CornerRadius="30"
+                                                   Padding="6"
+                                                   Margin="10,10,10,15"
+                                                   BackgroundColor="White"
+                                                   HasShadow="True"
+                                                   HeightRequest="100"
+                                                   VerticalOptions="CenterAndExpand">
+                                                <Label Text="{Binding .}"
+                                                       FontSize="16"
+                                                       TextColor="#394758"
+                                                       VerticalTextAlignment="Center"
+                                                       HorizontalOptions="CenterAndExpand"/>
+                                            </Frame>
+                                        </StackLayout>
+                                    </ViewCell>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </StackLayout>
                 </StackLayout>
 
+                <!-- Continue Button -->
                 <Button Command="{Binding ContinueCommand}" 
                         Text="Continue" 
                         HorizontalOptions="FillAndExpand"

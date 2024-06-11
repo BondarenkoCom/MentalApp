@@ -117,8 +117,6 @@ namespace MentalTest.ViewModels
             }
         }
 
-
-
         private void UpdateUI()
         {
             OnPropertyChanged(nameof(CurrentQuestion));
@@ -155,41 +153,6 @@ namespace MentalTest.ViewModels
             return questions;
         }
 
-
-        private void LoadFinalAnswers(int testId)
-        {
-            string createFinalAnswersTableQuery = @"
-                CREATE TABLE IF NOT EXISTS FinalAnswers (
-                    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-                    TestId INTEGER NOT NULL,
-                    ResultText TEXT NOT NULL,
-                    ScoreRange TEXT NOT NULL
-                )";
-            _database.Execute(createFinalAnswersTableQuery);
-
-            var existingFinalAnswers = _database.Table<FinalAnswer>().Where(fa => fa.TestId == testId).ToList();
-            if (!existingFinalAnswers.Any())
-            {
-                //var finalAnswersToInsert = new List<FinalAnswer>
-                //{
-                //    new FinalAnswer { TestId = 11, ResultText = "Вы настоящий ангел на поле боя, как Mercy.", ScoreRange = "High" },
-                //    new FinalAnswer { TestId = 11, ResultText = "Ваша забота и поддержка напоминают о Mercy.", ScoreRange = "Medium" },
-                //    new FinalAnswer { TestId = 11, ResultText = "Да ты вообще не должен играть за Mercy, лузер.", ScoreRange = "Low" },
-                //
-                //};
-                var finalAnswersToInsert = new List<FinalAnswer>
-                {
-                    new FinalAnswer { TestId = 13, ResultText = "Вы настоящий стратег и мыслитель, в духе Motoko Kusanagi.", ScoreRange = "High" },
-                    new FinalAnswer { TestId = 13, ResultText = "Вы показали глубокое понимание сложных вопросов, как это делает Motoko.", ScoreRange = "Medium" },
-                    new FinalAnswer { TestId = 13, ResultText = "Похоже, вам еще предстоит изучить мир Motoko Kusanagi.", ScoreRange = "Low" }
-                };
-                foreach (var finalAnswer in finalAnswersToInsert)
-                {
-                    _database.Insert(finalAnswer);
-                }
-            }
-        }
-
         private void OnContinue()
         {
             if (SelectedAnswer != null)
@@ -198,12 +161,12 @@ namespace MentalTest.ViewModels
                 if (CurrentQuestionIndex < Questions.Count - 1)
                 {
                     CurrentQuestionIndex++;
-                    SelectedAnswer = null;  // Сброс выбранного ответа
-                    UpdateUI();  // Обновление вопроса и ответов
+                    SelectedAnswer = null;  
+                    UpdateUI();  
                 }
                 else
                 {
-                    FinishTest();  // Обработка завершения теста
+                    FinishTest();
                 }
             }
         }
