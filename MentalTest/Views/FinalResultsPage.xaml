@@ -1,18 +1,97 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:MentalTest.Views"
              x:Class="MentalTest.Views.FinalResultsPage"
              Title="Test Results"
              NavigationPage.HasNavigationBar="False">
 
     <ContentPage.Content>
-        <StackLayout VerticalOptions="Center" HorizontalOptions="Center" Padding="20">
+        <AbsoluteLayout>
+            <!-- Background shapes -->
+            <Image Source="VectorBlue.png"
+                   AbsoluteLayout.LayoutBounds="0.5, 0.5, 1, 1"
+                   AbsoluteLayout.LayoutFlags="All"
+                   Aspect="AspectFill" />
+            <Image Source="VectorOrange.png"
+                   AbsoluteLayout.LayoutBounds="0.5, 0.75, 1, 1"
+                   AbsoluteLayout.LayoutFlags="All"
+                   Aspect="AspectFill" />
 
-            <Label Text="Your Test Results" FontSize="Large" HorizontalOptions="Center"/>
+            <!-- Content -->
+            <Grid AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-            <Label Text="{Binding FinalResultMessage}" FontSize="Medium" HorizontalOptions="Center" Margin="0,20,0,0"/>
+                <!-- Header -->
+                <StackLayout Orientation="Horizontal"
+                             BackgroundColor="White"
+                             HeightRequest="50"
+                             Padding="10"
+                             VerticalOptions="Start"
+                             Grid.Row="0">
+                    <Label Text="Your Test Results"
+                           FontSize="24"
+                           FontAttributes="Bold"
+                           TextColor="#394758"
+                           HorizontalOptions="CenterAndExpand"
+                           VerticalOptions="Center"
+                           Margin="10,0,0,0" />
+                </StackLayout>
 
-            <Button Text="Return to Home" Command="{Binding ReturnHomeCommand}" Margin="0,40,0,0"/>
-        </StackLayout>
+                <!-- Results Content -->
+                <StackLayout Padding="20"
+                             VerticalOptions="FillAndExpand"
+                             Grid.Row="1"
+                             HorizontalOptions="Center"
+                             WidthRequest="300">
+                    <!-- Set width request here -->
+                    <Frame BackgroundColor="White"
+                           BorderColor="#D5D5D5"
+                           CornerRadius="12"
+                           Padding="20"
+                           HorizontalOptions="Center"
+                           VerticalOptions="CenterAndExpand"
+                           WidthRequest="300">
+                        <!-- Set width request here -->
+                        <Label Text="{Binding FinalResultMessage}"
+                               FontSize="20"
+                               TextColor="#394758"
+                               HorizontalOptions="Center"
+                               VerticalOptions="CenterAndExpand"/>
+                    </Frame>
+
+                    <!-- Placeholder for future image -->
+                    <Frame BackgroundColor="White"
+                           BorderColor="#D5D5D5"
+                           CornerRadius="12"
+                           Padding="20"
+                           WidthRequest="300"
+                           HeightRequest="400"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           Margin="0,20,0,20"/>
+                </StackLayout>
+
+                <!-- Continue Button -->
+                <StackLayout VerticalOptions="End"
+                             Padding="20"
+                             Grid.Row="2"
+                             HorizontalOptions="Center">
+                    <Button Text="Return to Home" 
+                            Command="{Binding ReturnHomeCommand}" 
+                            FontSize="20"
+                            BackgroundColor="#4A90E2"
+                            TextColor="White"
+                            CornerRadius="25"
+                            HeightRequest="50"
+                            HorizontalOptions="Center"
+                            Margin="0,10,0,10"/>
+                </StackLayout>
+            </Grid>
+        </AbsoluteLayout>
     </ContentPage.Content>
 </ContentPage>
