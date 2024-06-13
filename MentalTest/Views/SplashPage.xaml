@@ -5,9 +5,20 @@
              NavigationPage.HasNavigationBar="False">
     <ContentPage.Content>
         <AbsoluteLayout>
-            <Image Source="logo.png" 
-                   AbsoluteLayout.LayoutBounds="56, 246, 300, 300" 
-                   AbsoluteLayout.LayoutFlags="None"/>
+            <!-- Background shapes -->
+            <Image Source="VectorBlue.png"
+                   AbsoluteLayout.LayoutBounds="0.5, 0.5, 1, 1"
+                   AbsoluteLayout.LayoutFlags="All"
+                   Aspect="AspectFill" />
+            <Image Source="VectorOrange.png"
+                   AbsoluteLayout.LayoutBounds="0.5, 0.75, 1, 1"
+                   AbsoluteLayout.LayoutFlags="All"
+                   Aspect="AspectFill" />
+
+            <!-- New Logo -->
+            <Image Source="newLogo.png" 
+                   AbsoluteLayout.LayoutBounds="0.5, 0.5, 500, 500" 
+                   AbsoluteLayout.LayoutFlags="PositionProportional"/>
         </AbsoluteLayout>
     </ContentPage.Content>
 </ContentPage>

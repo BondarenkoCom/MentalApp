@@ -27,20 +27,17 @@
                 </Grid.RowDefinitions>
 
                 <!-- Header -->
-                <StackLayout Orientation="Horizontal"
-                             BackgroundColor="White"
-                             HeightRequest="50"
-                             Padding="10"
-                             VerticalOptions="Start"
-                             Grid.Row="0">
+                <Grid Grid.Row="0"
+                      BackgroundColor="White"
+                      HeightRequest="50"
+                      Padding="10">
                     <Label Text="Your Test Results"
                            FontSize="24"
                            FontAttributes="Bold"
                            TextColor="#394758"
-                           HorizontalOptions="CenterAndExpand"
-                           VerticalOptions="Center"
-                           Margin="10,0,0,0" />
-                </StackLayout>
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+                </Grid>
 
                 <!-- Results Content -->
                 <StackLayout Padding="20"
@@ -48,7 +45,6 @@
                              Grid.Row="1"
                              HorizontalOptions="Center"
                              WidthRequest="300">
-                    <!-- Set width request here -->
                     <Frame BackgroundColor="White"
                            BorderColor="#D5D5D5"
                            CornerRadius="12"
@@ -56,7 +52,6 @@
                            HorizontalOptions="Center"
                            VerticalOptions="CenterAndExpand"
                            WidthRequest="300">
-                        <!-- Set width request here -->
                         <Label Text="{Binding FinalResultMessage}"
                                FontSize="20"
                                TextColor="#394758"
@@ -64,16 +59,14 @@
                                VerticalOptions="CenterAndExpand"/>
                     </Frame>
 
-                    <!-- Placeholder for future image -->
-                    <Frame BackgroundColor="White"
-                           BorderColor="#D5D5D5"
-                           CornerRadius="12"
-                           Padding="20"
-                           WidthRequest="300"
-                           HeightRequest="400"
+                    <!-- Placeholder for image -->
+                    <Image Source="FinishTestIconCleanBg.png"
+                           Aspect="AspectFit"
                            HorizontalOptions="Center"
                            VerticalOptions="Center"
-                           Margin="0,20,0,20"/>
+                           WidthRequest="300"
+                           HeightRequest="400"
+                           Margin="0,-40,0,20"/>
                 </StackLayout>
 
                 <!-- Continue Button -->
@@ -89,7 +82,7 @@
                             CornerRadius="25"
                             HeightRequest="50"
                             HorizontalOptions="Center"
-                            Margin="0,10,0,10"/>
+                            Margin="0,-30,0,10"/>
                 </StackLayout>
             </Grid>
         </AbsoluteLayout>
