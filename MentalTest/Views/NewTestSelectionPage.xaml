@@ -14,7 +14,7 @@
             <Image Source="VectorOrange.png"
                    AbsoluteLayout.LayoutBounds="0.5, 0.75, 1, 1"
                    AbsoluteLayout.LayoutFlags="All"
-                   Aspect="AspectFill" />   
+                   Aspect="AspectFill" />
 
             <!-- Content -->
             <RelativeLayout AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">
@@ -25,13 +25,24 @@
                        TextColor="#394758"
                        RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.05}"
                        RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.05}" />
+
+                <Label Text="No tests available."
+                       FontFamily="Montserrat"
+                       FontSize="16"
+                       TextColor="#394758"
+                       IsVisible="{Binding NoTestsAvailable}"
+                       RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.5}"
+                       RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.5}"
+                       HorizontalTextAlignment="Center" />
+
                 <ListView ItemsSource="{Binding TestTypes}"
                           SeparatorVisibility="None"
                           RowHeight="80"
                           BackgroundColor="Transparent"
                           RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}"
                           RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.15}"
-                          ItemTapped="OnItemTapped">
+                          ItemTapped="OnItemTapped"
+                          IsVisible="{Binding HasTests}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>

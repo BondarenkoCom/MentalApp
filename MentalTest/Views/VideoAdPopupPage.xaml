@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<pages:PopupPage xmlns="http://xamarin.com/schemas/2014/forms"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                 xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup" 
+                 x:Class="MentalTest.Views.VideoAdPopupPage">
+    <StackLayout VerticalOptions="Center" HorizontalOptions="Center" Padding="20">
+        <Frame BackgroundColor="White" CornerRadius="10">
+            <StackLayout Padding="20">
+                <Label Text="Watch this ad!" HorizontalOptions="Center" />
+                <Image Source="dva_meme.jpeg"
+                       Aspect="AspectFit"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       HeightRequest="300"
+                       WidthRequest="300"/>
+                <Button Text="Close" Clicked="OnCloseButtonClicked"/>
+            </StackLayout>
+        </Frame>
+    </StackLayout>
+</pages:PopupPage>

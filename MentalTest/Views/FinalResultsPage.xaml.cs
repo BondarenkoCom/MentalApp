@@ -1,8 +1,9 @@
 ﻿using MentalTest.ViewModels;
+using Rg.Plugins.Popup.Services;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using System.Diagnostics; 
-using System.Threading.Tasks; 
+using System.Diagnostics;
+using System.Threading.Tasks;
 using System;
 
 namespace MentalTest.Views
@@ -19,23 +20,22 @@ namespace MentalTest.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            Debug.WriteLine("FinalResultsPage appearing"); 
-            await ShowAd();
+            Debug.WriteLine("FinalResultsPage appearing");
+            await ShowVideoAdPopup();
         }
 
-        private async Task ShowAd()
+        private async Task ShowVideoAdPopup()
         {
             try
             {
-                Debug.WriteLine("Creating ad page"); 
-                var adPage = new VideoAdPage();
-                Debug.WriteLine("Pushing modal ad page"); 
-                await Navigation.PushModalAsync(adPage);
-                Debug.WriteLine("Ad page shown"); 
+                Debug.WriteLine("Attempting to show video ad popup");
+                var videoAdPage = new VideoAdPopupPage();
+                await PopupNavigation.Instance.PushAsync(videoAdPage);
+                Debug.WriteLine("Video ad popup shown successfully");
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error showing ad: {ex}"); 
+                Debug.WriteLine($"Failed to show video ad popup: {ex.Message}");
             }
         }
     }

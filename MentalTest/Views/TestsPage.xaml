@@ -65,7 +65,7 @@
                                            CornerRadius="20"
                                            Padding="0"
                                            Margin="18,10"
-                                           BackgroundColor="White"
+                                           BackgroundColor="#E9EDF3"
                                            HasShadow="True">
                                         <Grid>
                                             <Grid.RowDefinitions>
