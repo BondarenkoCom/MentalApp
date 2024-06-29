@@ -66,7 +66,6 @@
     <Compile Include="Renderers\CustomFrameRenderer.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\DatabaseAssetService.cs" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\DummyMentalTestDB.db" />
@@ -132,6 +131,9 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\dva_meme.jpeg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

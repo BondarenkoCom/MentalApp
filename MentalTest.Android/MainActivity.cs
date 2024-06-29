@@ -2,12 +2,10 @@
 using Android.Content.PM;
 using Android.Runtime;
 using Android.OS;
-using System.IO;
 using Xamarin.Forms;
 using Rg.Plugins.Popup;
 using Android;
 
-[assembly: Dependency(typeof(MentalTest.Droid.Services.DatabaseAssetService))]
 namespace MentalTest.Droid
 {
     [Activity(Label = "MentalTest", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize)]

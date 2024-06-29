@@ -4,7 +4,9 @@
              x:Class="MentalTest.App">
     <Application.Resources>
         <ResourceDictionary>
-            <converters:BooleanToColorConverter x:Key="BooleanToColorConverter"/>
+            <converters:BooleanToColorConverter x:Key="BooleanToColorConverter" 
+                                                TrueColor="Orange" 
+                                                FalseColor="White"/>
             <converters:BooleanToTextColorConverter x:Key="BooleanToTextColorConverter"/>
         </ResourceDictionary>
     </Application.Resources>

@@ -9,9 +9,9 @@ using System;
 namespace MentalTest.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class FinalResultsPage : ContentPage
+    public partial class NewFinalResultsPage : ContentPage
     {
-        public FinalResultsPage(string resultText)
+        public NewFinalResultsPage(string resultText)
         {
             InitializeComponent();
             BindingContext = new FinalResultsViewModel(resultText);
@@ -20,7 +20,7 @@ namespace MentalTest.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            Debug.WriteLine("FinalResultsPage appearing");
+            Debug.WriteLine("NewFinalResultsPage appearing");
             await ShowVideoAdPopup();
         }
 

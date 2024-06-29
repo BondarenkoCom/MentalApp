@@ -47,7 +47,6 @@ namespace MentalTest.Service
             }
         }
 
-
         public async Task<List<QuestionModal>> GetQuestionsByTestIdAsync(int testId)
         {
             try

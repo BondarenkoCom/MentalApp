@@ -41,7 +41,7 @@ namespace MentalTest.Droid.Renderers
             }
         }
 
-        private void UpdateBackground()
+        protected override void UpdateBackground()
         {
             if (this.Element.BackgroundColor != Xamarin.Forms.Color.Default)
             {

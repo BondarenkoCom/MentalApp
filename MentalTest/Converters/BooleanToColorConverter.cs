@@ -6,9 +6,12 @@ namespace MentalTest.Converters
 {
     public class BooleanToColorConverter : IValueConverter
     {
+        public Color TrueColor { get; set; } = Color.Orange;
+        public Color FalseColor { get; set; } = Color.White;
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (bool)value ? Color.LightBlue : Color.White;
+            return (bool)value ? TrueColor : FalseColor;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -22,7 +22,7 @@ namespace MentalTest
 
             MessagingCenter.Subscribe<SurveyViewModel, string>(this, "FinishTest", async (sender, resultText) =>
             {
-                await MainPage.Navigation.PushAsync(new FinalResultsPage(resultText));
+                await MainPage.Navigation.PushAsync(new NewFinalResultsPage(resultText));
             });
 
             MainPage = new NavigationPage(new SplashPage());
@@ -30,13 +30,7 @@ namespace MentalTest
 
         protected override void OnStart()
         {
-            //DependencyService.Register<IDatabaseAssetService>();
-            //
-            //var databaseAssetService = DependencyService.Get<IDatabaseAssetService>();
-            //
-            //string destinationPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "MentalTestDB.db");
-            //
-            //databaseAssetService.CopyDatabaseIfNotExists("MentalTestDB.db", destinationPath);
+
         }
 
 

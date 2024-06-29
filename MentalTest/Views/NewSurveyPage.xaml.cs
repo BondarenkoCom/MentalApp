@@ -7,15 +7,15 @@ using Xamarin.Forms.Xaml;
 namespace MentalTest.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class SurveyPage : ContentPage
+    public partial class NewSurveyPage : ContentPage
     {
         private SurveyViewModel _viewModel;
 
-        public SurveyPage(TestCardModel test)
+        public NewSurveyPage(TestCardModel test)
         {
             NavigationPage.SetHasNavigationBar(this, false);
             InitializeComponent();
-            Console.WriteLine("SurveyPage constructor started.");
+            Console.WriteLine("NewSurveyPage constructor started.");
 
             _viewModel = new SurveyViewModel(test.id);
             BindingContext = _viewModel;
@@ -26,7 +26,7 @@ namespace MentalTest.Views
                 Console.WriteLine("InitializeAsync completed.");
             });
 
-            Console.WriteLine("SurveyPage constructor completed.");
+            Console.WriteLine("NewSurveyPage constructor completed.");
         }
 
         private void OnBackButtonClicked(object sender, EventArgs e)
