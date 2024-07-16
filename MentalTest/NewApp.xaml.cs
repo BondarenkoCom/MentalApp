@@ -2,19 +2,15 @@
 using Xamarin.Forms;
 using MentalTest.Views;
 using Xamarin.Forms.Internals;
-using MentalTest.Interfaces;
-using System.IO;
 using MentalTest.ViewModels;
 using MentalTest.Service;
 
 namespace MentalTest
 {
-    public partial class App : Application
+    public partial class NewApp : Application
     {
-        public App()
+        public NewApp()
         {
-
-
             Log.Listeners.Add(new DelegateLogListener((arg1, arg2) => System.Diagnostics.Debug.WriteLine(arg2)));
             InitializeComponent();
 
@@ -32,7 +28,6 @@ namespace MentalTest
         {
 
         }
-
 
         protected override void OnSleep()
         {

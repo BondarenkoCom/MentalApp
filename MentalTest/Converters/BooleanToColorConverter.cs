@@ -11,7 +11,7 @@ namespace MentalTest.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (bool)value ? TrueColor : FalseColor;
+            return value == parameter ? TrueColor : FalseColor;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

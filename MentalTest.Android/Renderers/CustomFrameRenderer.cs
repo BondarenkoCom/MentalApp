@@ -12,6 +12,7 @@ namespace MentalTest.Droid.Renderers
     {
         public CustomFrameRenderer(Context context) : base(context)
         {
+
         }
 
         protected override void OnElementChanged(ElementChangedEventArgs<Frame> e)

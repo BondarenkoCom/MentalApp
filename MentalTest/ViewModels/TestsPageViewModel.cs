@@ -19,7 +19,6 @@ namespace MentalTest.ViewModels
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly SQLiteConnection _database;
         private ApiService _apiService = new ApiService();
         private string _debugDataStoreInfo;  
         private ObservableCollection<TestCardModel> _testItems = new ObservableCollection<TestCardModel>();

@@ -18,7 +18,7 @@ namespace MentalTest.Droid
             Forms.Init(this, savedInstanceState);
             Popup.Init(this); // Initialize Popup plugin
 
-            LoadApplication(new App());
+            LoadApplication(new NewApp());
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)

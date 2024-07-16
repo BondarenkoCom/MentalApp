@@ -1,0 +1,20 @@
+﻿<Application xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:MentalTest.Converters"
+             x:Class="MentalTest.NewApp">
+    <Application.Resources>
+        <ResourceDictionary>
+            <converters:BooleanToColorConverter x:Key="BooleanToColorConverter" TrueColor="Green" FalseColor="White"/>
+            <converters:BooleanToTextColorConverter x:Key="BooleanToTextColorConverter"/>
+            <converters:BooleanToStyleConverter x:Key="BooleanToStyleConverter"/>
+
+            <Style x:Key="NormalViewCellStyle" TargetType="StackLayout">
+                <Setter Property="BackgroundColor" Value="White" />
+            </Style>
+
+            <Style x:Key="SelectedViewCellStyle" TargetType="StackLayout">
+                <Setter Property="BackgroundColor" Value="LightGray" />
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
