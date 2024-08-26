@@ -87,11 +87,26 @@
                                                    HasShadow="True"
                                                    HeightRequest="100"
                                                    VerticalOptions="CenterAndExpand">
+                                                <Frame.Triggers>
+                                                    <DataTrigger TargetType="Frame"
+                                                                 Binding="{Binding IsSelected, Source={RelativeSource AncestorType={x:Type ViewCell}}}"
+                                                                 Value="True">
+                                                        <Setter Property="BackgroundColor" Value="#b76e79" />
+                                                    </DataTrigger>
+                                                </Frame.Triggers>
                                                 <Label Text="{Binding .}"
                                                        FontSize="16"
                                                        TextColor="#394758"
                                                        VerticalTextAlignment="Center"
-                                                       HorizontalOptions="CenterAndExpand"/>
+                                                       HorizontalOptions="CenterAndExpand">
+                                                    <Label.Triggers>
+                                                        <DataTrigger TargetType="Label"
+                                                                     Binding="{Binding IsSelected, Source={RelativeSource AncestorType={x:Type ViewCell}}}"
+                                                                     Value="True">
+                                                            <Setter Property="TextColor" Value="White" />
+                                                        </DataTrigger>
+                                                    </Label.Triggers>
+                                                </Label>
                                             </Frame>
                                         </StackLayout>
                                     </ViewCell>
