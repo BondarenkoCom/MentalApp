@@ -8,6 +8,8 @@ using Newtonsoft.Json;
 
 namespace MentalTest.Service
 {
+    //namespace MauiMentalApp.Service
+
     public class ApiService
     {
         private HttpClient _client;

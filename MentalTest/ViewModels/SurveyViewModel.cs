@@ -3,13 +3,12 @@ using Xamarin.Forms;
 using System.ComponentModel;
 using System;
 using System.Collections.Generic;
-using SQLite;
 using System.Linq;
 using System.Threading.Tasks;
-using MentalTest.Interfaces;
 using MentalTest.Models;
 using MentalTest.Service;
 using System.Windows.Input;
+using SQLite;
 
 namespace MentalTest.ViewModels
 {
@@ -17,64 +16,52 @@ namespace MentalTest.ViewModels
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public ObservableCollection<string> CurrentAnswers =>
-            new ObservableCollection<string>(CurrentQuestion?.Answers.Split(';') ?? new string[0]);
-
+        public ObservableCollection<AnswerModel> CurrentAnswers { get; set; }
         public ObservableCollection<QuestionModal> Questions { get; set; }
         public Command ContinueCommand { get; set; }
-        public int CurrentQuestionIndex { get; set; }
-        public QuestionModal CurrentQuestion => Questions.Count > CurrentQuestionIndex ? Questions[CurrentQuestionIndex] : null;
         public ICommand AnswerCommand { get; private set; }
-        public ObservableCollection<string> QuestionsAndAnswers { get; set; } = new ObservableCollection<string>();
         public ObservableCollection<string> SelectedAnswers { get; set; } = new ObservableCollection<string>();
 
-        private string _selectedAnswer;
-        public int CurrentTestId { get; private set; }
-
-        public string SelectedAnswer
+        private AnswerModel _selectedAnswer;
+        public AnswerModel SelectedAnswer
         {
             get => _selectedAnswer;
             set
             {
                 if (_selectedAnswer != value)
                 {
-                    Console.WriteLine($"SelectedAnswer changing from '{_selectedAnswer}' to '{value}'");
+                    if (_selectedAnswer != null)
+                        _selectedAnswer.IsSelected = false;
+
+                    Console.WriteLine($"SelectedAnswer changing from '{_selectedAnswer?.Text}' to '{value?.Text}'");
                     _selectedAnswer = value;
+
+                    if (_selectedAnswer != null)
+                        _selectedAnswer.IsSelected = true;
+
                     OnPropertyChanged(nameof(SelectedAnswer));
-                    OnPropertyChanged(nameof(IsFirstAnswerSelected));
-                    OnPropertyChanged(nameof(IsSecondAnswerSelected));
-                    OnPropertyChanged(nameof(IsThirdAnswerSelected));
-                    OnPropertyChanged(nameof(IsFourthAnswerSelected));
+                    OnPropertyChanged(nameof(IsAnswerSelected));
                 }
             }
         }
 
+        public bool IsAnswerSelected => SelectedAnswer != null;
 
-        public bool IsFirstAnswerSelected => SelectedAnswer == CurrentAnswers[0];
-        public bool IsSecondAnswerSelected => SelectedAnswer == CurrentAnswers[1];
-        public bool IsThirdAnswerSelected => SelectedAnswer == CurrentAnswers[2];
-        public bool IsFourthAnswerSelected => SelectedAnswer == CurrentAnswers[3];
+        public int CurrentQuestionIndex { get; set; }
+        public int CurrentTestId { get; private set; }
+
+        public QuestionModal CurrentQuestion => Questions.Count > CurrentQuestionIndex ? Questions[CurrentQuestionIndex] : null;
 
         public string QuestionCounterText => $"Question {CurrentQuestionIndex + 1} of {Questions.Count}";
 
         public SurveyViewModel(int testId)
         {
-            InitializeAsync(testId).ConfigureAwait(false);
             CurrentTestId = testId;
-
-            try
-            {
-                AnswerCommand = new Command<string>(OnAnswerSelected);
-                Questions = new ObservableCollection<QuestionModal>();
-                ContinueCommand = new Command(OnContinue);
-                CurrentQuestionIndex = 0;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Exception occurred in the constructor of SurveyViewModel: {ex.Message}");
-                Console.WriteLine($"Call stack: {ex.StackTrace}");
-                throw;
-            }
+            Questions = new ObservableCollection<QuestionModal>();
+            ContinueCommand = new Command(OnContinue);
+            AnswerCommand = new Command<AnswerModel>(OnAnswerSelected);
+            CurrentQuestionIndex = 0;
+            InitializeAsync(testId).ConfigureAwait(false);
         }
 
         public async Task InitializeAsync(int testId)
@@ -102,9 +89,21 @@ namespace MentalTest.ViewModels
 
         private void UpdateUI()
         {
-            OnPropertyChanged(nameof(CurrentQuestion));
+            if (CurrentQuestion != null)
+            {
+                CurrentAnswers = new ObservableCollection<AnswerModel>(
+                    CurrentQuestion.Answers.Split(';').Select(a => new AnswerModel { Text = a })
+                );
+            }
+            else
+            {
+                CurrentAnswers = new ObservableCollection<AnswerModel>();
+            }
+
             OnPropertyChanged(nameof(CurrentAnswers));
+            OnPropertyChanged(nameof(CurrentQuestion));
             OnPropertyChanged(nameof(QuestionCounterText));
+            SelectedAnswer = null; // Reset selected answer
             Console.WriteLine("UI updated with current question and answers.");
         }
 
@@ -141,7 +140,8 @@ namespace MentalTest.ViewModels
         {
             if (SelectedAnswer != null)
             {
-                SelectedAnswers.Add(SelectedAnswer);
+                SelectedAnswers.Add(SelectedAnswer.Text);
+
                 if (CurrentQuestionIndex < Questions.Count - 1)
                 {
                     CurrentQuestionIndex++;
@@ -179,7 +179,8 @@ namespace MentalTest.ViewModels
             int correctAnswers = 0;
             for (int i = 0; i < Questions.Count; i++)
             {
-                if (SelectedAnswers[i] == Questions[i].Answers.Split(';')[Questions[i].CorrectAnswerIndex])
+                var correctAnswer = Questions[i].Answers.Split(';')[Questions[i].CorrectAnswerIndex];
+                if (SelectedAnswers[i] == correctAnswer)
                     correctAnswers++;
             }
             return correctAnswers;
@@ -195,14 +196,14 @@ namespace MentalTest.ViewModels
                 return "Low";
         }
 
+        private void OnAnswerSelected(AnswerModel answer)
+        {
+            SelectedAnswer = answer;
+        }
+
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private void OnAnswerSelected(string answer)
-        {
-            SelectedAnswer = answer;
         }
     }
 

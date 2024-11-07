@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:MentalTest.Views"
              x:Class="MentalTest.Views.NewSurveyPage"
              Title="{Binding CurrentQuestion.QuestionText}"
              NavigationPage.HasNavigationBar="False">
@@ -69,12 +68,14 @@
                                TextColor="#394758"
                                Margin="0,20,0,20" />
 
-                        <ListView ItemsSource="{Binding CurrentAnswers}"
+                        <ListView x:Name="AnswersListView"
+                                  ItemsSource="{Binding CurrentAnswers}"
                                   SelectedItem="{Binding SelectedAnswer}"
                                   SeparatorVisibility="None"
                                   BackgroundColor="Transparent"
                                   VerticalOptions="FillAndExpand"
-                                  Margin="0,20,0,0">
+                                  Margin="0,20,0,0"
+                                  SelectionMode="Single">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <ViewCell>
@@ -89,19 +90,19 @@
                                                    VerticalOptions="CenterAndExpand">
                                                 <Frame.Triggers>
                                                     <DataTrigger TargetType="Frame"
-                                                                 Binding="{Binding IsSelected, Source={RelativeSource AncestorType={x:Type ViewCell}}}"
+                                                                 Binding="{Binding IsSelected}"
                                                                  Value="True">
                                                         <Setter Property="BackgroundColor" Value="#b76e79" />
                                                     </DataTrigger>
                                                 </Frame.Triggers>
-                                                <Label Text="{Binding .}"
+                                                <Label Text="{Binding Text}"
                                                        FontSize="16"
                                                        TextColor="#394758"
                                                        VerticalTextAlignment="Center"
                                                        HorizontalOptions="CenterAndExpand">
                                                     <Label.Triggers>
                                                         <DataTrigger TargetType="Label"
-                                                                     Binding="{Binding IsSelected, Source={RelativeSource AncestorType={x:Type ViewCell}}}"
+                                                                     Binding="{Binding IsSelected}"
                                                                      Value="True">
                                                             <Setter Property="TextColor" Value="White" />
                                                         </DataTrigger>
@@ -127,7 +128,7 @@
                         TextColor="White"
                         CornerRadius="25"
                         Grid.Row="2"
-                        IsEnabled="{Binding SelectedAnswer}" />
+                        IsEnabled="{Binding IsAnswerSelected}" />
             </Grid>
         </AbsoluteLayout>
     </ContentPage.Content>
