@@ -49,9 +49,14 @@
                              VerticalOptions="FillAndExpand"
                              Grid.Row="1">
                     <Label Text="Loading data..." 
-                           HorizontalOptions="Center" 
-                           IsVisible="{Binding IsDataLoading}" />
-
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center"
+                                 IsVisible="{Binding IsDataLoading}"
+                                 FontSize="Large"
+                                 TextColor="#394758"
+                                 FontAttributes="Bold"
+                                 Margin="0,30,0,30" />
+                    
                     <ListView ItemsSource="{Binding TestItems}"
                               ItemSelected="ListView_OnItemSelected"
                               SeparatorVisibility="None"

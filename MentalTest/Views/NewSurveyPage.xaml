@@ -6,7 +6,7 @@
              NavigationPage.HasNavigationBar="False">
     <ContentPage.Content>
         <AbsoluteLayout>
-            <!-- Background shapes -->
+            <!-- Фоновые изображения -->
             <Image Source="VectorBlue.png"
                    AbsoluteLayout.LayoutBounds="0.5, 1.2, 1, 1"
                    AbsoluteLayout.LayoutFlags="All"
@@ -16,7 +16,7 @@
                    AbsoluteLayout.LayoutFlags="All"
                    Aspect="AspectFill" />
 
-            <!-- Content -->
+            <!-- Содержимое -->
             <Grid AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -24,7 +24,7 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <!-- Header -->
+                <!-- Заголовок -->
                 <StackLayout Orientation="Horizontal"
                              BackgroundColor="White"
                              HeightRequest="50"
@@ -48,26 +48,43 @@
                            Margin="10,0,0,0" />
                 </StackLayout>
 
-                <!-- Content -->
+                <!-- Основное содержимое -->
                 <StackLayout Padding="20"
                              VerticalOptions="FillAndExpand"
                              Grid.Row="1">
-                    <Label Text="{Binding QuestionCounterText}"
-                           FontSize="16"
-                           TextColor="#394758"
-                           HorizontalOptions="Center" />
+                    <!-- Оформленный блок для счетчика вопросов -->
+                    <Frame BackgroundColor="#E9EDF3"
+                           CornerRadius="15"
+                           Padding="10"
+                           Margin="10,10"
+                           HasShadow="True"
+                           HorizontalOptions="Center">
+                        <Label Text="{Binding QuestionCounterText}"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               TextColor="#394758"
+                               HorizontalOptions="Center" />
+                    </Frame>
 
-                    <!-- Question and Answers -->
+                    <!-- Вопрос и ответы -->
                     <StackLayout Spacing="20"
                                  VerticalOptions="FillAndExpand">
-                        <Label Text="{Binding CurrentQuestion.QuestionText}"
-                               FontSize="20"
-                               FontAttributes="Bold"
-                               HorizontalOptions="Center" 
-                               VerticalOptions="Start"
-                               TextColor="#394758"
-                               Margin="0,20,0,20" />
 
+                        <!-- Оформленный блок для текущего вопроса -->
+                        <Frame BackgroundColor="White"
+                               CornerRadius="20"
+                               Padding="20"
+                               Margin="10,20"
+                               HasShadow="True">
+                            <Label Text="{Binding CurrentQuestion.QuestionText}"
+                                   FontSize="20"
+                                   FontAttributes="Bold"
+                                   HorizontalOptions="CenterAndExpand"
+                                   VerticalOptions="CenterAndExpand"
+                                   TextColor="#394758" />
+                        </Frame>
+
+                        <!-- Список ответов -->
                         <ListView x:Name="AnswersListView"
                                   ItemsSource="{Binding CurrentAnswers}"
                                   SelectedItem="{Binding SelectedAnswer}"
@@ -117,7 +134,7 @@
                     </StackLayout>
                 </StackLayout>
 
-                <!-- Continue Button -->
+                <!-- Кнопка "Продолжить" -->
                 <Button Command="{Binding ContinueCommand}" 
                         Text="Continue" 
                         HorizontalOptions="FillAndExpand"

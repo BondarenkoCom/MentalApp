@@ -125,9 +125,9 @@
     <AndroidResource Include="Resources\drawable\newLogo.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\MercyTrailler.mp4">
+    <EmbeddedResource Include="Resources\videos\MercyTrailler.mp4">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </AndroidResource>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\dva_meme.jpeg" />

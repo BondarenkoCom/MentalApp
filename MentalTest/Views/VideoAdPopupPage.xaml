@@ -1,19 +1,25 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <pages:PopupPage xmlns="http://xamarin.com/schemas/2014/forms"
                  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                 xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup" 
+                 xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
+                 xmlns:octane="clr-namespace:Octane.Xamarin.Forms.VideoPlayer;assembly=Octane.Xamarin.Forms.VideoPlayer"
                  x:Class="MentalTest.Views.VideoAdPopupPage">
     <StackLayout VerticalOptions="Center" HorizontalOptions="Center" Padding="20">
         <Frame BackgroundColor="White" CornerRadius="10">
             <StackLayout Padding="20">
                 <Label Text="Watch this ad!" HorizontalOptions="Center" />
-                <Image Source="dva_meme.jpeg"
-                       Aspect="AspectFit"
-                       HorizontalOptions="Center"
-                       VerticalOptions="Center"
-                       HeightRequest="300"
-                       WidthRequest="300"/>
-                <Button Text="Close" Clicked="OnCloseButtonClicked"/>
+                <octane:VideoPlayer x:Name="videoPlayer"
+                                   Source="resource://MentalTest.Resources.Videos.MercyTrailler.mp4"
+                                   AutoPlay="True"
+                                   FillMode="ResizeAspect"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   HeightRequest="300"
+                                   WidthRequest="300" />
+                <Button x:Name="closeButton"
+                        Text="Close"
+                        Clicked="OnCloseButtonClicked"
+                        IsVisible="False" />
             </StackLayout>
         </Frame>
     </StackLayout>
