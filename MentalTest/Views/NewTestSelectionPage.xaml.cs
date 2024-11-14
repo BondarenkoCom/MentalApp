@@ -19,11 +19,17 @@ namespace MentalTest.Views
             BindingContext = _viewModel;
         }
 
+        //protected override bool OnBackButtonPressed()
+        //{
+        //    Navigation.PushAsync(new TestsPage("null"));
+        //    return true; 
+        //}
+
         protected override bool OnBackButtonPressed()
         {
-            Navigation.PushAsync(new TestsPage("null"));
-            return true; 
+            return true;
         }
+
 
         private async void OnItemTapped(object sender, ItemTappedEventArgs e)
         {
