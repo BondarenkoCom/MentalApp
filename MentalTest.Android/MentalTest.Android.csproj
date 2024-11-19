@@ -136,9 +136,21 @@
     <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\drawable\pers.png">
+    <AndroidResource Include="Resources\drawable\pers.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\career.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </AndroidResource>
+    <AndroidResource Include="Resources\drawable\fun.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </AndroidResource>
+    <AndroidResource Include="Resources\drawable\job.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </AndroidResource>
+    <AndroidResource Include="Resources\drawable\love.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </AndroidResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>
