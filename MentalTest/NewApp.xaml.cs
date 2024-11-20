@@ -14,6 +14,9 @@ namespace MentalTest
             Log.Listeners.Add(new DelegateLogListener((arg1, arg2) => System.Diagnostics.Debug.WriteLine(arg2)));
             InitializeComponent();
 
+            // Initialize Sharpnado MaterialFrame
+            Sharpnado.MaterialFrame.Initializer.Initialize(loggerEnable: false, debugLogEnable: false);
+
             DependencyService.Register<ApiService>();
 
             MessagingCenter.Subscribe<SurveyViewModel, string>(this, "FinishTest", async (sender, resultText) =>

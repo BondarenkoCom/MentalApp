@@ -1,21 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+             xmlns:rv="clr-namespace:Sharpnado.MaterialFrame;assembly=Sharpnado.MaterialFrame"
              x:Class="MentalTest.Views.NewTestSelectionPage"
              BackgroundColor="#121212"
              NavigationPage.HasNavigationBar="False">
     <ContentPage.Content>
         <AbsoluteLayout>
-            <!-- Background -->
-            <BoxView AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
-                     AbsoluteLayout.LayoutFlags="All">
-                <BoxView.Background>
-                    <LinearGradientBrush>
-                        <GradientStop Color="#1E1E2A" Offset="0" />
-                        <GradientStop Color="#2A0845" Offset="1" />
-                    </LinearGradientBrush>
-                </BoxView.Background>
-            </BoxView>
+            <!-- Background Image -->
+            <Image Source="wave_texture.png"
+                   Aspect="AspectFill"
+                   AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
+                   AbsoluteLayout.LayoutFlags="All" />
 
             <!-- Main Grid Layout -->
             <Grid AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
@@ -28,7 +25,7 @@
                        FontFamily="Montserrat"
                        FontAttributes="Bold"
                        FontSize="24"
-                       TextColor="#E0E0E0"
+                       TextColor="#FFFFFF"
                        Grid.Row="0"
                        Margin="0,10,0,10" />
 
@@ -44,35 +41,39 @@
                         <DataTemplate>
                             <Grid Padding="0" Margin="0,5" BackgroundColor="Transparent">
                                 <!-- Button Frame -->
-                                <Frame CornerRadius="20"
-                                       Padding="0"
-                                       Margin="0,0"
-                                       HasShadow="True"
-                                       BackgroundColor="Transparent"
-                                       HeightRequest="80"
-                                       VerticalOptions="FillAndExpand">
-                                    <Frame.Background>
-                                        <LinearGradientBrush>
-                                            <GradientStop Color="#802A0845" Offset="0" />
-                                            <GradientStop Color="#804B0082" Offset="1" />
-                                        </LinearGradientBrush>
-                                    </Frame.Background>
-                                    <Frame.GestureRecognizers>
+                                <rv:MaterialFrame CornerRadius="20"
+                                                  Padding="0"
+                                                  Margin="0,0"
+                                                  HasShadow="True"
+                                                  MaterialTheme="Acrylic"
+                                                  LightThemeBackgroundColor="#F1F1F1"
+                                                  HeightRequest="80"
+                                                  VerticalOptions="FillAndExpand">
+                                    <rv:MaterialFrame.GestureRecognizers>
                                         <TapGestureRecognizer Tapped="OnButtonTapped" />
-                                    </Frame.GestureRecognizers>
+                                    </rv:MaterialFrame.GestureRecognizers>
                                     <!-- Grid for layout -->
                                     <Grid VerticalOptions="Center" HorizontalOptions="FillAndExpand" Padding="15,0">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
-                                        <!-- Category Icon -->
-                                        <Image Source="{Binding Icon}"
-                                               WidthRequest="40"
-                                               HeightRequest="40"
-                                               Margin="0,0,10,0"
-                                               Grid.Column="0"
-                                               HorizontalOptions="Start" />
+                                        <!-- Category Icon with Shadow -->
+                                        <Frame CornerRadius="30"
+                                               WidthRequest="60"
+                                               HeightRequest="60"
+                                               BackgroundColor="Transparent"
+                                               VerticalOptions="Center"
+                                               HorizontalOptions="Center"
+                                               xct:ShadowEffect.Color="Black"
+                                               xct:ShadowEffect.Opacity="0.4"
+                                               xct:ShadowEffect.Radius="10"
+                                               xct:ShadowEffect.OffsetX="5"
+                                               xct:ShadowEffect.OffsetY="5">
+                                            <Image Source="{Binding Icon}"
+                                                   WidthRequest="60"
+                                                   HeightRequest="60" />
+                                        </Frame>
                                         <!-- Category Name -->
                                         <Label Text="{Binding Name}"
                                                FontFamily="Montserrat"
@@ -82,7 +83,7 @@
                                                HorizontalOptions="Start"
                                                Grid.Column="1" />
                                     </Grid>
-                                </Frame>
+                                </rv:MaterialFrame>
                             </Grid>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
