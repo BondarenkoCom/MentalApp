@@ -1,11 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
-             xmlns:rv="clr-namespace:Sharpnado.MaterialFrame;assembly=Sharpnado.MaterialFrame"
-             x:Class="MentalTest.Views.NewTestSelectionPage"
-             BackgroundColor="#121212"
-             NavigationPage.HasNavigationBar="False">
+<ContentPage
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+    xmlns:rv="clr-namespace:Sharpnado.MaterialFrame;assembly=Sharpnado.MaterialFrame" xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+    x:Class="MentalTest.Views.NewTestSelectionPage"
+    BackgroundColor="#121212"
+    NavigationPage.HasNavigationBar="False">
     <ContentPage.Content>
         <AbsoluteLayout>
             <!-- Background Image -->
@@ -41,17 +42,27 @@
                         <DataTemplate>
                             <Grid Padding="0" Margin="0,5" BackgroundColor="Transparent">
                                 <!-- Button Frame -->
-                                <rv:MaterialFrame CornerRadius="20"
-                                                  Padding="0"
-                                                  Margin="0,0"
-                                                  HasShadow="True"
-                                                  MaterialTheme="Acrylic"
-                                                  LightThemeBackgroundColor="#F1F1F1"
-                                                  HeightRequest="80"
-                                                  VerticalOptions="FillAndExpand">
+                                <rv:MaterialFrame
+                                    CornerRadius="20"
+                                    Padding="0"
+                                    Margin="0,0"
+                                    HasShadow="True"
+                                    MaterialTheme="Acrylic"
+                                    LightThemeBackgroundColor="Transparent"
+                                    Elevation="10"
+                                    HeightRequest="80"
+                                    VerticalOptions="FillAndExpand">
                                     <rv:MaterialFrame.GestureRecognizers>
                                         <TapGestureRecognizer Tapped="OnButtonTapped" />
                                     </rv:MaterialFrame.GestureRecognizers>
+
+                                    <!-- Semi-transparent overlay -->
+                                    <d:BoxView
+                                        Color="#80FFFFFF"
+                                        CornerRadius="20"
+                                        VerticalOptions="FillAndExpand"
+                                        HorizontalOptions="FillAndExpand" />
+
                                     <!-- Grid for layout -->
                                     <Grid VerticalOptions="Center" HorizontalOptions="FillAndExpand" Padding="15,0">
                                         <Grid.ColumnDefinitions>
@@ -71,14 +82,14 @@
                                                xct:ShadowEffect.OffsetX="5"
                                                xct:ShadowEffect.OffsetY="5">
                                             <Image Source="{Binding Icon}"
-                                                   WidthRequest="60"
-                                                   HeightRequest="60" />
+                                                   WidthRequest="50"
+                                                   HeightRequest="50" />
                                         </Frame>
                                         <!-- Category Name -->
                                         <Label Text="{Binding Name}"
                                                FontFamily="Montserrat"
                                                FontSize="20"
-                                               TextColor="#FFFFFF"
+                                               TextColor="Black"
                                                VerticalTextAlignment="Center"
                                                HorizontalOptions="Start"
                                                Grid.Column="1" />
