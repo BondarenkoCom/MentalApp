@@ -3,18 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MentalTest.Views.NewSurveyPage"
              Title="{Binding CurrentQuestion.QuestionText}"
-             NavigationPage.HasNavigationBar="False">
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="#121212">
     <ContentPage.Content>
         <AbsoluteLayout>
-            <!-- Фоновые изображения -->
-            <Image Source="VectorBlue.png"
-                   AbsoluteLayout.LayoutBounds="0.5, 1.2, 1, 1"
-                   AbsoluteLayout.LayoutFlags="All"
-                   Aspect="AspectFill" />
-            <Image Source="VectorOrange.png"
-                   AbsoluteLayout.LayoutBounds="0.5, 1.5, 1, 1"
-                   AbsoluteLayout.LayoutFlags="All"
-                   Aspect="AspectFill" />
+            <!-- Новый фон -->
+            <Image Source="wave_texture.png"
+                   Aspect="AspectFill"
+                   AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
+                   AbsoluteLayout.LayoutFlags="All" />
 
             <!-- Содержимое -->
             <Grid AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">
@@ -52,7 +49,7 @@
                 <StackLayout Padding="20"
                              VerticalOptions="FillAndExpand"
                              Grid.Row="1">
-                    <!-- Оформленный блок для счетчика вопросов -->
+                    <!-- Счетчик вопросов -->
                     <Frame BackgroundColor="#E9EDF3"
                            CornerRadius="15"
                            Padding="10"
@@ -66,72 +63,69 @@
                                HorizontalOptions="Center" />
                     </Frame>
 
-                    <!-- Вопрос и ответы -->
-                    <StackLayout Spacing="20"
-                                 VerticalOptions="FillAndExpand">
+                    <!-- Вопрос -->
+                    <Frame BackgroundColor="White"
+                           CornerRadius="20"
+                           Padding="20"
+                           Margin="10,20"
+                           HasShadow="True">
+                        <Label Text="{Binding CurrentQuestion.QuestionText}"
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               HorizontalOptions="CenterAndExpand"
+                               VerticalOptions="CenterAndExpand"
+                               TextColor="#394758" />
+                    </Frame>
 
-                        <!-- Оформленный блок для текущего вопроса -->
-                        <Frame BackgroundColor="White"
-                               CornerRadius="20"
-                               Padding="20"
-                               Margin="10,20"
-                               HasShadow="True">
-                            <Label Text="{Binding CurrentQuestion.QuestionText}"
-                                   FontSize="20"
-                                   FontAttributes="Bold"
-                                   HorizontalOptions="CenterAndExpand"
-                                   VerticalOptions="CenterAndExpand"
-                                   TextColor="#394758" />
-                        </Frame>
-
-                        <!-- Список ответов -->
-                        <ListView x:Name="AnswersListView"
-                                  ItemsSource="{Binding CurrentAnswers}"
-                                  SelectedItem="{Binding SelectedAnswer}"
-                                  SeparatorVisibility="None"
-                                  BackgroundColor="Transparent"
-                                  VerticalOptions="FillAndExpand"
-                                  Margin="0,20,0,0"
-                                  SelectionMode="Single">
-                            <ListView.ItemTemplate>
+                    <!-- Список ответов в рамке -->
+                    <Frame BackgroundColor="#FFFFFF"
+                           CornerRadius="20"
+                           Padding="10"
+                           Margin="10,20"
+                           HasShadow="True">
+                        <CollectionView ItemsSource="{Binding CurrentAnswers}"
+                                        SelectionMode="Single"
+                                        SelectedItem="{Binding SelectedAnswer}"
+                                        BackgroundColor="Transparent"
+                                        VerticalOptions="FillAndExpand">
+                            <CollectionView.ItemsLayout>
+                                <LinearItemsLayout Orientation="Vertical" ItemSpacing="5" />
+                            </CollectionView.ItemsLayout>
+                            <CollectionView.ItemTemplate>
                                 <DataTemplate>
-                                    <ViewCell>
-                                        <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand" Padding="0">
-                                            <Frame BorderColor="#b76e79"
-                                                   CornerRadius="30"
-                                                   Padding="6"
-                                                   Margin="10,10,10,15"
-                                                   BackgroundColor="White"
-                                                   HasShadow="True"
-                                                   HeightRequest="100"
-                                                   VerticalOptions="CenterAndExpand">
-                                                <Frame.Triggers>
-                                                    <DataTrigger TargetType="Frame"
+                                    <Grid Padding="0" Margin="0,5" BackgroundColor="Transparent">
+                                        <Frame CornerRadius="20"
+                                               Padding="15"
+                                               Margin="0,5"
+                                               BackgroundColor="White"
+                                               HasShadow="True"
+                                               HeightRequest="60">
+                                            <Frame.Triggers>
+                                                <DataTrigger TargetType="Frame"
+                                                             Binding="{Binding IsSelected}"
+                                                             Value="True">
+                                                    <Setter Property="BackgroundColor" Value="#b76e79" />
+                                                </DataTrigger>
+                                            </Frame.Triggers>
+                                            <Label Text="{Binding Text}"
+                                                   FontSize="16"
+                                                   TextColor="#394758"
+                                                   VerticalTextAlignment="Center"
+                                                   HorizontalTextAlignment="Center">
+                                                <Label.Triggers>
+                                                    <DataTrigger TargetType="Label"
                                                                  Binding="{Binding IsSelected}"
                                                                  Value="True">
-                                                        <Setter Property="BackgroundColor" Value="#b76e79" />
+                                                        <Setter Property="TextColor" Value="White" />
                                                     </DataTrigger>
-                                                </Frame.Triggers>
-                                                <Label Text="{Binding Text}"
-                                                       FontSize="16"
-                                                       TextColor="#394758"
-                                                       VerticalTextAlignment="Center"
-                                                       HorizontalOptions="CenterAndExpand">
-                                                    <Label.Triggers>
-                                                        <DataTrigger TargetType="Label"
-                                                                     Binding="{Binding IsSelected}"
-                                                                     Value="True">
-                                                            <Setter Property="TextColor" Value="White" />
-                                                        </DataTrigger>
-                                                    </Label.Triggers>
-                                                </Label>
-                                            </Frame>
-                                        </StackLayout>
-                                    </ViewCell>
+                                                </Label.Triggers>
+                                            </Label>
+                                        </Frame>
+                                    </Grid>
                                 </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                    </StackLayout>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </Frame>
                 </StackLayout>
 
                 <!-- Кнопка "Продолжить" -->
