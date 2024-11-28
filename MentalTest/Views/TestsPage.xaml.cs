@@ -41,6 +41,8 @@ namespace MentalTest.Views
             }
         }
 
+
+
         private void OnBackButtonClicked(object sender, EventArgs e)
         {
             Navigation.PopAsync();
