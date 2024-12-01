@@ -48,7 +48,7 @@
                 <ListView ItemsSource="{Binding TestItems}"
                           ItemSelected="ListView_OnItemSelected"
                           SeparatorVisibility="None"
-                          RowHeight="160"
+                          RowHeight="200"
                           BackgroundColor="Transparent"
                           IsVisible="{Binding IsDataLoaded}"
                           VerticalOptions="FillAndExpand"
@@ -57,15 +57,17 @@
                         <DataTemplate>
                             <ViewCell>
                                 <Frame CornerRadius="20"
-                                       Padding="16"
-                                       Margin="8"
+                                       Padding="20"
+                                       Margin="10"
                                        BackgroundColor="#FFFFFF"
                                        HasShadow="True"
-                                       Opacity="0.9">
+                                       Opacity="0.95">
                                     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="2" />
                                             <RowDefinition Height="*" />
+                                            <RowDefinition Height="Auto" />
                                         </Grid.RowDefinitions>
 
                                         <!-- Название теста -->
@@ -76,15 +78,30 @@
                                                VerticalOptions="Start"
                                                HorizontalOptions="Start" />
 
+                                        <!-- Разделительная линия -->
+                                        <BoxView HeightRequest="2"
+                                                 BackgroundColor="#394758"
+                                                 VerticalOptions="Center"
+                                                 HorizontalOptions="FillAndExpand"
+                                                 Grid.Row="1" />
+
                                         <!-- Описание -->
                                         <Label Text="{Binding description}"
                                                FontSize="16"
                                                TextColor="#394758"
-                                               MaxLines="2"
+                                               MaxLines="3"
                                                LineBreakMode="TailTruncation"
-                                               VerticalOptions="End"
+                                               VerticalOptions="Start"
                                                HorizontalOptions="Start"
-                                               Grid.Row="1" />
+                                               Grid.Row="2" />
+
+                                        <!-- Статус вопросов -->
+                                        <Label Text="{Binding questions_status}"
+                                               FontSize="14"
+                                               TextColor="#888888"
+                                               VerticalOptions="End"
+                                               HorizontalOptions="End"
+                                               Grid.Row="3" />
                                     </Grid>
                                 </Frame>
                             </ViewCell>
