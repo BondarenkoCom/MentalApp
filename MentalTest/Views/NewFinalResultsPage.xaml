@@ -4,21 +4,18 @@
              xmlns:local="clr-namespace:MentalTest.Views"
              x:Class="MentalTest.Views.NewFinalResultsPage"
              Title="Test Results"
-             NavigationPage.HasNavigationBar="False">
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="#121212">
 
     <ContentPage.Content>
         <AbsoluteLayout>
-            <!-- Background shapes -->
-            <Image Source="VectorBlue.png"
-                   AbsoluteLayout.LayoutBounds="0.5, 0.5, 1, 1"
-                   AbsoluteLayout.LayoutFlags="All"
-                   Aspect="AspectFill" />
-            <Image Source="VectorOrange.png"
-                   AbsoluteLayout.LayoutBounds="0.5, 0.75, 1, 1"
-                   AbsoluteLayout.LayoutFlags="All"
-                   Aspect="AspectFill" />
+            <!-- Новый фон -->
+            <Image Source="wave_texture.png"
+                   Aspect="AspectFill"
+                   AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
+                   AbsoluteLayout.LayoutFlags="All" />
 
-            <!-- Content -->
+            <!-- Основной контент -->
             <Grid AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -26,7 +23,7 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <!-- Header -->
+                <!-- Заголовок -->
                 <Grid Grid.Row="0"
                       BackgroundColor="White"
                       HeightRequest="50"
@@ -34,42 +31,67 @@
                     <Label Text="Your Test Results"
                            FontSize="24"
                            FontAttributes="Bold"
-                           TextColor="#394758"
-                           HorizontalOptions="Center"
-                           VerticalOptions="Center" />
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center"
+                           TextColor="#394758" />
                 </Grid>
 
-                <!-- Results Content -->
+                <!-- Результаты -->
                 <StackLayout Padding="20"
                              VerticalOptions="FillAndExpand"
                              Grid.Row="1"
                              HorizontalOptions="Center"
                              WidthRequest="300">
-                    <Frame BackgroundColor="White"
-                           BorderColor="#D5D5D5"
-                           CornerRadius="12"
-                           Padding="20"
-                           HorizontalOptions="Center"
-                           VerticalOptions="CenterAndExpand"
-                           WidthRequest="300">
-                        <Label Text="{Binding FinalResultMessage}"
-                               FontSize="20"
-                               TextColor="#394758"
-                               HorizontalOptions="Center"
-                               VerticalOptions="CenterAndExpand"/>
+                    <Frame CornerRadius="20"
+                           Padding="16"
+                           Margin="8"
+                           BackgroundColor="#FFFFFF"
+                           HasShadow="True"
+                           Opacity="0.95">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="2" />
+                                <!-- Линия -->
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <!-- Результат -->
+                            <Label Text="Results"
+                                   FontSize="22"
+                                   FontAttributes="Bold"
+                                   TextColor="#121212"
+                                   VerticalOptions="Start"
+                                   HorizontalOptions="Center" />
+
+                            <!-- Разделительная линия -->
+                            <BoxView HeightRequest="1"
+                                     BackgroundColor="#D3D3D3"
+                                     VerticalOptions="Center"
+                                     HorizontalOptions="FillAndExpand"
+                                     Grid.Row="1" />
+
+                            <!-- Описание результата -->
+                            <Label Text="{Binding FinalResultMessage}"
+                                   FontSize="18"
+                                   TextColor="#394758"
+                                   LineBreakMode="WordWrap"
+                                   VerticalOptions="Start"
+                                   HorizontalOptions="Center"
+                                   Grid.Row="2" />
+                        </Grid>
                     </Frame>
 
-                    <!-- Placeholder for image -->
+                    <!-- Иконка -->
                     <Image Source="FinishTestIconCleanBg.png"
                            Aspect="AspectFit"
                            HorizontalOptions="Center"
                            VerticalOptions="Center"
-                           WidthRequest="300"
-                           HeightRequest="400"
-                           Margin="0,-40,0,20"/>
+                           WidthRequest="200"
+                           HeightRequest="200"
+                           Margin="0,20,0,20" />
                 </StackLayout>
 
-                <!-- Continue Button -->
                 <StackLayout VerticalOptions="End"
                              Padding="20"
                              Grid.Row="2"
@@ -82,7 +104,8 @@
                             CornerRadius="25"
                             HeightRequest="50"
                             HorizontalOptions="Center"
-                            Margin="0,-30,0,10"/>
+                            WidthRequest="200"
+                            Margin="0,0,0,20" />
                 </StackLayout>
             </Grid>
         </AbsoluteLayout>

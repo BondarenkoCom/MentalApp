@@ -2,23 +2,51 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MentalTest.Views.SplashPage"
-             NavigationPage.HasNavigationBar="False">
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="#F8F8F8">
+
     <ContentPage.Content>
         <AbsoluteLayout>
-            <!-- Background shapes -->
-            <Image Source="VectorBlue.png"
-                   AbsoluteLayout.LayoutBounds="0.5, 0.5, 1, 1"
-                   AbsoluteLayout.LayoutFlags="All"
-                   Aspect="AspectFill" />
-            <Image Source="VectorOrange.png"
-                   AbsoluteLayout.LayoutBounds="0.5, 0.75, 1, 1"
-                   AbsoluteLayout.LayoutFlags="All"
-                   Aspect="AspectFill" />
+            <!-- Фон -->
+            <Image Source="wave_texture.png"
+                   Aspect="AspectFill"
+                   AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
+                   AbsoluteLayout.LayoutFlags="All" />
 
-            <!-- New Logo -->
-            <Image Source="newLogo.png" 
-                   AbsoluteLayout.LayoutBounds="0.5, 0.5, 500, 500" 
-                   AbsoluteLayout.LayoutFlags="PositionProportional"/>
+            <!-- Контейнер для логотипа и текста -->
+            <Frame CornerRadius="20"
+                   BackgroundColor="#FFFFFF"
+                   Opacity="0.9"
+                   Padding="20"
+                   HasShadow="True"
+                   AbsoluteLayout.LayoutBounds="0.5, 0.5, 0.8, 0.5"
+                   AbsoluteLayout.LayoutFlags="All">
+                <StackLayout Spacing="20" VerticalOptions="CenterAndExpand" HorizontalOptions="Center">
+                    <!-- Логотип -->
+                    <Image Source="newLogo.png"
+                           Aspect="AspectFit"
+                           HeightRequest="150"
+                           HorizontalOptions="Center" />
+
+                    <!-- Текст Loading... -->
+                    <Label x:Name="LoadingText"
+                           Text="Loading..."
+                           FontSize="22"
+                           FontAttributes="Bold"
+                           TextColor="#394758"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center" />
+
+                    <!-- Декоративный индикатор -->
+                    <StackLayout Orientation="Horizontal"
+                                 HorizontalOptions="Center"
+                                 Spacing="5">
+                        <BoxView x:Name="Dot1" WidthRequest="10" HeightRequest="10" CornerRadius="5" Color="#394758" Opacity="0.4" />
+                        <BoxView x:Name="Dot2" WidthRequest="10" HeightRequest="10" CornerRadius="5" Color="#394758" Opacity="0.4" />
+                        <BoxView x:Name="Dot3" WidthRequest="10" HeightRequest="10" CornerRadius="5" Color="#394758" Opacity="0.4" />
+                    </StackLayout>
+                </StackLayout>
+            </Frame>
         </AbsoluteLayout>
     </ContentPage.Content>
 </ContentPage>
