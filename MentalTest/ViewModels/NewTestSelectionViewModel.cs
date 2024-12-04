@@ -19,10 +19,10 @@ namespace MentalTest.ViewModels
         {
             TestTypes = new ObservableCollection<TestType>
             {
-                new TestType { Name = "Personality", AccentColor = "#9C27B0", Icon = "pers.png" },
-                new TestType { Name = "Job", AccentColor = "#2196F3", Icon = "job.png" },
                 new TestType { Name = "Love & Sex", AccentColor = "#E91E63", Icon = "love.png" },
-                new TestType { Name = "Career", AccentColor = "#4CAF50", Icon = "career.png" },
+                new TestType { Name = "Work & Development", AccentColor = "#2196F3", Icon = "job.png" },
+                new TestType { Name = "Travel", AccentColor = "#4CAF50", Icon = "career.png" },
+                new TestType { Name = "Personality", AccentColor = "#9C27B0", Icon = "pers.png" },
                 new TestType { Name = "Fun", AccentColor = "#FF9800", Icon = "fun.png" },
             };
 
