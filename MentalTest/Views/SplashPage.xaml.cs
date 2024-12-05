@@ -18,7 +18,7 @@ namespace MentalTest.Views
         {
             base.OnAppearing();
 
-            await Task.Delay(2000);
+            await Task.Delay(3000);
 
             await Navigation.PushAsync(new NewTestSelectionPage());
         }

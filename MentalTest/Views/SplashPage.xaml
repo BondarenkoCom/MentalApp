@@ -7,13 +7,11 @@
 
     <ContentPage.Content>
         <AbsoluteLayout>
-            <!-- Фон -->
             <Image Source="wave_texture.png"
                    Aspect="AspectFill"
                    AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
                    AbsoluteLayout.LayoutFlags="All" />
 
-            <!-- Контейнер для логотипа и текста -->
             <Frame CornerRadius="20"
                    BackgroundColor="#FFFFFF"
                    Opacity="0.9"
@@ -22,13 +20,18 @@
                    AbsoluteLayout.LayoutBounds="0.5, 0.5, 0.8, 0.5"
                    AbsoluteLayout.LayoutFlags="All">
                 <StackLayout Spacing="20" VerticalOptions="CenterAndExpand" HorizontalOptions="Center">
-                    <!-- Логотип -->
                     <Image Source="newLogo.png"
                            Aspect="AspectFit"
                            HeightRequest="150"
                            HorizontalOptions="Center" />
 
-                    <!-- Текст Loading... -->
+                    <Label Text="Discover yourself—easy and fun!"
+                           FontSize="18"
+                           FontAttributes="Italic"
+                           TextColor="#394758"
+                           HorizontalTextAlignment="Center"
+                           VerticalOptions="Start" />
+
                     <Label x:Name="LoadingText"
                            Text="Loading..."
                            FontSize="22"
