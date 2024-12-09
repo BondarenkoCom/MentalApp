@@ -7,13 +7,12 @@
              BackgroundColor="#121212">
     <ContentPage.Content>
         <AbsoluteLayout>
-            <!-- Новый фон -->
+            
             <Image Source="wave_texture.png"
                    Aspect="AspectFill"
                    AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
                    AbsoluteLayout.LayoutFlags="All" />
 
-            <!-- Содержимое -->
             <Grid AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -21,7 +20,6 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <!-- Заголовок -->
                 <StackLayout Orientation="Horizontal"
                              BackgroundColor="White"
                              HeightRequest="50"
@@ -45,11 +43,9 @@
                            Margin="10,0,0,0" />
                 </StackLayout>
 
-                <!-- Основное содержимое -->
                 <StackLayout Padding="20"
                              VerticalOptions="FillAndExpand"
                              Grid.Row="1">
-                    <!-- Счетчик вопросов -->
                     <Frame BackgroundColor="#E9EDF3"
                            CornerRadius="15"
                            Padding="10"
@@ -63,7 +59,6 @@
                                HorizontalOptions="Center" />
                     </Frame>
 
-                    <!-- Вопрос -->
                     <Frame BackgroundColor="White"
                            CornerRadius="20"
                            Padding="20"
@@ -77,7 +72,6 @@
                                TextColor="#394758" />
                     </Frame>
 
-                    <!-- Список ответов в рамке -->
                     <Frame BackgroundColor="#FFFFFF"
                            CornerRadius="20"
                            Padding="10"
@@ -104,7 +98,7 @@
                                                 <DataTrigger TargetType="Frame"
                                                              Binding="{Binding IsSelected}"
                                                              Value="True">
-                                                    <Setter Property="BackgroundColor" Value="#b76e79" />
+                                                    <Setter Property="BackgroundColor" Value="#358B65" />
                                                 </DataTrigger>
                                             </Frame.Triggers>
                                             <Label Text="{Binding Text}"
@@ -128,18 +122,18 @@
                     </Frame>
                 </StackLayout>
 
-                <!-- Кнопка "Продолжить" -->
                 <Button Command="{Binding ContinueCommand}" 
                         Text="Continue" 
                         HorizontalOptions="FillAndExpand"
                         VerticalOptions="End"
                         HeightRequest="50"
                         Margin="20,10"
-                        BackgroundColor="#4A90E2"
+                        BackgroundColor="#008B8B" 
                         TextColor="White"
                         CornerRadius="25"
                         Grid.Row="2"
                         IsEnabled="{Binding IsAnswerSelected}" />
+
             </Grid>
         </AbsoluteLayout>
     </ContentPage.Content>

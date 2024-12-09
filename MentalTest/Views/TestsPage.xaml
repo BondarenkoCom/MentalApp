@@ -7,22 +7,22 @@
              NavigationPage.HasNavigationBar="False">
     <ContentPage.Content>
         <AbsoluteLayout>
-            <!-- Новый фон -->
+            
             <Image Source="wave_texture.png"
                    Aspect="AspectFill"
                    AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
                    AbsoluteLayout.LayoutFlags="All" />
 
-            <!-- Основной контент -->
+           
             <Grid AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <!-- Заголовок -->
+               
                 <StackLayout Orientation="Horizontal"
-                             BackgroundColor="White"
+                             BackgroundColor="#F0F0F0"
                              HeightRequest="50"
                              Padding="10"
                              VerticalOptions="Start"
@@ -40,11 +40,11 @@
                            FontAttributes="Bold"
                            HorizontalOptions="Start"
                            VerticalOptions="Center"
-                           TextColor="#394758"
+                           TextColor="#3A3F44"
                            Margin="10,0,0,0" />
                 </StackLayout>
 
-                <!-- Список тестов -->
+                
                 <ListView ItemsSource="{Binding TestItems}"
                           ItemSelected="ListView_OnItemSelected"
                           SeparatorVisibility="None"
@@ -59,7 +59,7 @@
                                 <Frame CornerRadius="20"
                                        Padding="20"
                                        Margin="10"
-                                       BackgroundColor="#FFFFFF"
+                                       BackgroundColor="#F0F0F0"
                                        HasShadow="True"
                                        Opacity="0.95">
                                     <Grid>
@@ -70,32 +70,32 @@
                                             <RowDefinition Height="Auto" />
                                         </Grid.RowDefinitions>
 
-                                        <!-- Название теста -->
+                                       
                                         <Label Text="{Binding title}"
                                                FontSize="22"
                                                FontAttributes="Bold"
-                                               TextColor="#121212"
+                                               TextColor="#3A3F44"
                                                VerticalOptions="Start"
                                                HorizontalOptions="Start" />
 
-                                        <!-- Разделительная линия -->
+                                        
                                         <BoxView HeightRequest="2"
-                                                 BackgroundColor="#394758"
+                                                 BackgroundColor="#C0C0C0"
                                                  VerticalOptions="Center"
                                                  HorizontalOptions="FillAndExpand"
                                                  Grid.Row="1" />
 
-                                        <!-- Описание -->
+                                       
                                         <Label Text="{Binding description}"
                                                FontSize="16"
-                                               TextColor="#394758"
+                                               TextColor="#3A3F44"
                                                MaxLines="3"
                                                LineBreakMode="TailTruncation"
                                                VerticalOptions="Start"
                                                HorizontalOptions="Start"
                                                Grid.Row="2" />
 
-                                        <!-- Статус вопросов -->
+                                        
                                         <Label Text="{Binding questions_status}"
                                                FontSize="14"
                                                TextColor="#888888"
@@ -109,13 +109,13 @@
                     </ListView.ItemTemplate>
                 </ListView>
 
-                <!-- Сообщение загрузки -->
+         
                 <Label Text="Loading data..."
                        HorizontalOptions="Center"
                        VerticalOptions="Center"
                        IsVisible="{Binding IsDataLoading}"
                        FontSize="Large"
-                       TextColor="#FFFFFF"
+                       TextColor="#F0F0F0"
                        FontAttributes="Bold"
                        Grid.Row="1" />
             </Grid>

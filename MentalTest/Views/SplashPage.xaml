@@ -40,7 +40,6 @@
                            HorizontalTextAlignment="Center"
                            VerticalTextAlignment="Center" />
 
-                    <!-- Декоративный индикатор -->
                     <StackLayout Orientation="Horizontal"
                                  HorizontalOptions="Center"
                                  Spacing="5">
