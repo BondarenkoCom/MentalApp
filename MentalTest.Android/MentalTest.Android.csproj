@@ -70,6 +70,9 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\DummyMentalTestDB.db" />
+    <AndroidAsset Include="Assets\Fonts\Origram.otf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </AndroidAsset>
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />

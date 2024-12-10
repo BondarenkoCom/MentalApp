@@ -7,20 +7,19 @@
              NavigationPage.HasNavigationBar="False">
     <ContentPage.Content>
         <AbsoluteLayout>
-            
+
             <Image Source="wave_texture.png"
                    Aspect="AspectFill"
                    AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
                    AbsoluteLayout.LayoutFlags="All" />
 
-           
             <Grid AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-               
+                <!-- Header -->
                 <StackLayout Orientation="Horizontal"
                              BackgroundColor="#F0F0F0"
                              HeightRequest="50"
@@ -38,13 +37,14 @@
                     <Label Text="{Binding SelectedCategory}"
                            FontSize="24"
                            FontAttributes="Bold"
+                           FontFamily="Origram"
                            HorizontalOptions="Start"
                            VerticalOptions="Center"
                            TextColor="#3A3F44"
                            Margin="10,0,0,0" />
                 </StackLayout>
 
-                
+                <!-- ListView -->
                 <ListView ItemsSource="{Binding TestItems}"
                           ItemSelected="ListView_OnItemSelected"
                           SeparatorVisibility="None"
@@ -70,24 +70,26 @@
                                             <RowDefinition Height="Auto" />
                                         </Grid.RowDefinitions>
 
-                                       
+                                        <!-- Title -->
                                         <Label Text="{Binding title}"
                                                FontSize="22"
                                                FontAttributes="Bold"
+                                               FontFamily="Origram"
                                                TextColor="#3A3F44"
                                                VerticalOptions="Start"
                                                HorizontalOptions="Start" />
 
-                                        
+                                        <!-- Divider -->
                                         <BoxView HeightRequest="2"
                                                  BackgroundColor="#C0C0C0"
                                                  VerticalOptions="Center"
                                                  HorizontalOptions="FillAndExpand"
                                                  Grid.Row="1" />
 
-                                       
+                                        <!-- Description -->
                                         <Label Text="{Binding description}"
                                                FontSize="16"
+                                               FontFamily="Origram"
                                                TextColor="#3A3F44"
                                                MaxLines="3"
                                                LineBreakMode="TailTruncation"
@@ -95,9 +97,10 @@
                                                HorizontalOptions="Start"
                                                Grid.Row="2" />
 
-                                        
+                                        <!-- Status -->
                                         <Label Text="{Binding questions_status}"
                                                FontSize="14"
+                                               FontFamily="Origram"
                                                TextColor="#888888"
                                                VerticalOptions="End"
                                                HorizontalOptions="End"
@@ -109,13 +112,14 @@
                     </ListView.ItemTemplate>
                 </ListView>
 
-         
+                <!-- Loading Indicator -->
                 <Label Text="Loading data..."
                        HorizontalOptions="Center"
                        VerticalOptions="Center"
                        IsVisible="{Binding IsDataLoading}"
                        FontSize="Large"
                        TextColor="#F0F0F0"
+                       FontFamily="Origram"
                        FontAttributes="Bold"
                        Grid.Row="1" />
             </Grid>
