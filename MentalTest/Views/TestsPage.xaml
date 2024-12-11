@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:rv="clr-namespace:Sharpnado.MaterialFrame;assembly=Sharpnado.MaterialFrame"
              xmlns:local="clr-namespace:MentalTest.Views"
              x:Class="MentalTest.Views.TestsPage"
              BackgroundColor="#121212"
@@ -45,10 +46,10 @@
                 </StackLayout>
 
                 <!-- ListView -->
-                <ListView ItemsSource="{Binding TestItems}"
-                          ItemSelected="ListView_OnItemSelected"
+                <ListView x:Name="TestList"
+                          ItemsSource="{Binding TestItems}"
                           SeparatorVisibility="None"
-                          RowHeight="200"
+                          RowHeight="220"
                           BackgroundColor="Transparent"
                           IsVisible="{Binding IsDataLoaded}"
                           VerticalOptions="FillAndExpand"
@@ -56,12 +57,18 @@
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
-                                <Frame CornerRadius="20"
-                                       Padding="20"
-                                       Margin="10"
-                                       BackgroundColor="#F0F0F0"
-                                       HasShadow="True"
-                                       Opacity="0.95">
+                                <rv:MaterialFrame CornerRadius="25"
+                                                  Padding="25"
+                                                  Margin="15"
+                                                  BackgroundColor="#F0F0F0"
+                                                  Elevation="10"
+                                                  HasShadow="True"
+                                                  Opacity="0.98">
+                                    <rv:MaterialFrame.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={x:Reference TestList}, Path=BindingContext.ItemTappedCommand}" 
+                                                              CommandParameter="{Binding .}"
+                                                              Tapped="OnCardTapped" />
+                                    </rv:MaterialFrame.GestureRecognizers>
                                     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
@@ -72,7 +79,7 @@
 
                                         <!-- Title -->
                                         <Label Text="{Binding title}"
-                                               FontSize="22"
+                                               FontSize="24"
                                                FontAttributes="Bold"
                                                FontFamily="Origram"
                                                TextColor="#3A3F44"
@@ -81,7 +88,7 @@
 
                                         <!-- Divider -->
                                         <BoxView HeightRequest="2"
-                                                 BackgroundColor="#C0C0C0"
+                                                 BackgroundColor="#D0D0D0"
                                                  VerticalOptions="Center"
                                                  HorizontalOptions="FillAndExpand"
                                                  Grid.Row="1" />
@@ -91,7 +98,7 @@
                                                FontSize="16"
                                                FontFamily="Origram"
                                                TextColor="#3A3F44"
-                                               MaxLines="3"
+                                               MaxLines="4"
                                                LineBreakMode="TailTruncation"
                                                VerticalOptions="Start"
                                                HorizontalOptions="Start"
@@ -106,7 +113,7 @@
                                                HorizontalOptions="End"
                                                Grid.Row="3" />
                                     </Grid>
-                                </Frame>
+                                </rv:MaterialFrame>
                             </ViewCell>
                         </DataTemplate>
                     </ListView.ItemTemplate>
