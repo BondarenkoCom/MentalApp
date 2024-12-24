@@ -5,7 +5,12 @@ VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MentalTest.Android", "MentalTest.Android\MentalTest.Android.csproj", "{694356F7-C55D-4BB1-AAED-6F3F5DF54815}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MentalTest", "MentalTest\MentalTest.csproj", "{3E1DFF0F-867E-4791-B464-7EC86EE65822}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MentalTest", "MentalTest\MentalTest.csproj", "{3E1DFF0F-867E-4791-B464-7EC86EE65822}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AEC588EB-6A21-4575-84E0-4A438DAD4F38}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\build-android.yml = .github\workflows\build-android.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
