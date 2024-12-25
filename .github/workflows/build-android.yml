@@ -20,12 +20,15 @@ jobs:
           dotnet-version: 6.0.x
 
       - name: Install Android SDK
+        shell: pwsh
         run: |
           choco install -y android-sdk
-          $env:ANDROID_HOME = "C:\Android\android-sdk"
-          $env:PATH += ";$env:ANDROID_HOME\cmdline-tools\latest\bin;$env:ANDROID_HOME\platform-tools"
-          echo "y" | $env:ANDROID_HOME\cmdline-tools\latest\bin\sdkmanager.bat --licenses
-          $env:ANDROID_HOME\cmdline-tools\latest\bin\sdkmanager.bat "platform-tools" "build-tools;30.0.3" "platforms;android-30"
+          $ANDROID_HOME = "C:\Android\android-sdk"
+          $env:ANDROID_HOME = $ANDROID_HOME
+          $env:PATH = "$ANDROID_HOME\cmdline-tools\latest\bin;$ANDROID_HOME\platform-tools;$env:PATH"
+          Write-Host "ANDROID_HOME set to: $ANDROID_HOME"
+          echo "y" | & "$ANDROID_HOME\cmdline-tools\latest\bin\sdkmanager.bat" --licenses
+          & "$ANDROID_HOME\cmdline-tools\latest\bin\sdkmanager.bat" "platform-tools" "build-tools;30.0.3" "platforms;android-30"
 
       - name: Build Xamarin.Android APK
         run: |
