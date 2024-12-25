@@ -1,4 +1,4 @@
-name: Build APK
+name: Build Xamarin.Android APK
 
 on:
   push:
@@ -7,45 +7,45 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-apk:
     runs-on: windows-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup .NET
+      - name: Setup .NET SDK
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 6.0.x
 
-      - name: Install Visual Studio Build Tools
-        run: |
-          choco install -y visualstudio2019buildtools
-        shell: cmd
-
-      - name: Install Xamarin Workload Using Visual Studio Installer
+      - name: Install Visual Studio with Xamarin Workloads
         shell: pwsh
         run: |
           $vsInstallerPath = "C:\Program Files (x86)\Microsoft Visual Studio\Installer"
           if (Test-Path "$vsInstallerPath\vs_installer.exe") {
               Start-Process "$vsInstallerPath\vs_installer.exe" `
-                -ArgumentList "--add Microsoft.VisualStudio.Workload.NetCrossPlat --quiet --wait" `
+                -ArgumentList "--add Microsoft.VisualStudio.Workload.NetCrossPlat --add Microsoft.VisualStudio.Workload.NetCoreBuildTools --add Microsoft.ComponentGroup.UWP.Xamarin --quiet --wait" `
                 -NoNewWindow -Wait
-              Write-Host "Xamarin workload installed successfully."
+              Write-Host "Visual Studio workloads for Xamarin installed successfully."
           } else {
-              Write-Host "Visual Studio Installer not found at: $vsInstallerPath"
+              Write-Host "Visual Studio Installer not found!"
               exit 1
           }
 
-      - name: Add MSBuild to PATH
+      - name: Set up MSBuild Path
         shell: pwsh
         run: |
           $msbuildPath = "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin"
-          [System.Environment]::SetEnvironmentVariable("PATH", $env:PATH + ";$msbuildPath", [System.EnvironmentVariableTarget]::Process)
-          Write-Host "MSBuild path added to PATH: $msbuildPath"
+          if (Test-Path $msbuildPath) {
+              [System.Environment]::SetEnvironmentVariable("PATH", $env:PATH + ";$msbuildPath", [System.EnvironmentVariableTarget]::Process)
+              Write-Host "MSBuild path added: $msbuildPath"
+          } else {
+              Write-Host "MSBuild path not found!"
+              exit 1
+          }
 
-      - name: Verify MSBuild Installation
+      - name: Verify MSBuild Version
         shell: pwsh
         run: |
           & "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe" /version
@@ -56,23 +56,19 @@ jobs:
           choco install -y android-sdk
           $env:ANDROID_HOME = "C:\Android\android-sdk"
           $env:PATH += ";$env:ANDROID_HOME\cmdline-tools\latest\bin;$env:ANDROID_HOME\platform-tools"
-
           echo "y" | & "$env:ANDROID_HOME\cmdline-tools\latest\bin\sdkmanager.bat" --licenses
           & "$env:ANDROID_HOME\cmdline-tools\latest\bin\sdkmanager.bat" "platform-tools" "build-tools;30.0.3" "platforms;android-30"
 
-      - name: Build Xamarin.Android APK
+      - name: Build APK
         shell: pwsh
         run: |
-          & "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe" MentalTest.Android/MentalTest.Android.csproj /t:PackageForAndroid /p:Configuration=Release /p:AndroidPackageFormat=apk
+          & "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe" MentalTest.Android/MentalTest.Android.csproj `
+            /t:PackageForAndroid `
+            /p:Configuration=Release `
+            /p:AndroidPackageFormat=apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v3
         with:
           name: app-release
           path: MentalTest.Android/bin/Release/*.apk
-
-      - name: Debug Chocolatey Logs
-        if: failure()
-        run: |
-          type C:\ProgramData\chocolatey\logs\chocolatey.log
-          dir C:\ProgramData\chocolatey\logs
