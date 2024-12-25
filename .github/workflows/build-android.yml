@@ -37,12 +37,16 @@ jobs:
         shell: pwsh
         id: locate-msbuild
         run: |
-          $msbuildPath = Get-ChildItem -Recurse "C:\Program Files (x86)\Microsoft Visual Studio\" -Filter "MSBuild.exe" | Where-Object { $_.FullName -like "*\Bin\MSBuild.exe" } | Select-Object -ExpandProperty FullName -First 1
+          $defaultPaths = @(
+              "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe",
+              "C:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe"
+          )
+          $msbuildPath = $defaultPaths | Where-Object { Test-Path $_ } | Select-Object -First 1
           if ($msbuildPath) {
               Write-Host "Found MSBuild at: $msbuildPath"
               echo "::set-output name=msbuild-path::$msbuildPath"
           } else {
-              Write-Host "MSBuild.exe not found!"
+              Write-Host "MSBuild.exe not found in default paths!"
               exit 1
           }
 
