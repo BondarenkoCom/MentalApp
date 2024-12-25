@@ -22,10 +22,8 @@ jobs:
       - name: Install Visual Studio Build Tools
         run: |
           choco install -y visualstudio2019-buildtools --version=16.11.10
-          choco install -y visualstudio-installer
-          echo "vs_installer.exe modify --add Microsoft.Component.MSBuild" > install-msbuild.bat
-          call install-msbuild.bat
-        shell: cmd
+          choco install -y visualstudio2019-workload-vctools
+          choco install -y visualstudio2019-workload-netcoretools
 
       - name: Install Android SDK
         shell: pwsh
