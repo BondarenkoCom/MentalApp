@@ -37,7 +37,7 @@ jobs:
         shell: pwsh
         id: locate-msbuild
         run: |
-          $msbuildPath = Get-ChildItem -Recurse "C:\Program Files (x86)\Microsoft Visual Studio\" -Filter "MSBuild.exe" | Select-Object -ExpandProperty FullName | Select-String "Bin\MSBuild.exe" -List
+          $msbuildPath = Get-ChildItem -Recurse "C:\Program Files (x86)\Microsoft Visual Studio\" -Filter "MSBuild.exe" | Where-Object { $_.FullName -like "*\Bin\MSBuild.exe" } | Select-Object -ExpandProperty FullName -First 1
           if ($msbuildPath) {
               Write-Host "Found MSBuild at: $msbuildPath"
               echo "::set-output name=msbuild-path::$msbuildPath"
