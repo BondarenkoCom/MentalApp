@@ -19,12 +19,24 @@ jobs:
         with:
           dotnet-version: 6.0.x
 
-      - name: Install Visual Studio Build Tools
+      - name: Install Visual Studio Build Tools and Workloads
         run: |
-          choco install -y visualstudio2019-buildtools
+          choco install -y visualstudio2019buildtools
           choco install -y visualstudio2019-workload-vctools
           choco install -y visualstudio2019-workload-netcoretools
-          set PATH=%PATH%;C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin
+        shell: cmd
+
+      - name: Add MSBuild to PATH
+        shell: pwsh
+        run: |
+          $msbuildPath = "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin"
+          $env:PATH += ";$msbuildPath"
+          Write-Host "MSBuild path added to PATH: $msbuildPath"
+
+      - name: Verify MSBuild Installation
+        shell: pwsh
+        run: |
+          msbuild /version
 
       - name: Install Android SDK
         shell: pwsh
@@ -32,8 +44,7 @@ jobs:
           choco install -y android-sdk
           $ANDROID_HOME = "C:\Android\android-sdk"
           $env:ANDROID_HOME = $ANDROID_HOME
-          $env:PATH = "$ANDROID_HOME\cmdline-tools\latest\bin;$ANDROID_HOME\platform-tools;$env:PATH"
-          Write-Host "ANDROID_HOME set to: $ANDROID_HOME"
+          $env:PATH += ";$ANDROID_HOME\cmdline-tools\latest\bin;$ANDROID_HOME\platform-tools"
           echo "y" | & "$ANDROID_HOME\cmdline-tools\latest\bin\sdkmanager.bat" --licenses
           & "$ANDROID_HOME\cmdline-tools\latest\bin\sdkmanager.bat" "platform-tools" "build-tools;30.0.3" "platforms;android-30"
 
@@ -46,3 +57,8 @@ jobs:
         with:
           name: app-release
           path: MentalTest.Android/bin/Release/*.apk
+
+      - name: Debug Chocolatey Logs
+        if: failure()
+        run: |
+          type C:\ProgramData\chocolatey\logs\chocolatey.log
