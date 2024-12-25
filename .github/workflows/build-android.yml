@@ -24,33 +24,40 @@ jobs:
           choco install -y visualstudio2019buildtools
           choco install -y visualstudio2019-workload-vctools
           choco install -y visualstudio2019-workload-netcoretools
+          choco install -y visualstudio2019-workload-xamarin
         shell: cmd
 
       - name: Add MSBuild to PATH
         shell: pwsh
         run: |
           $msbuildPath = "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin"
-          $env:PATH += ";$msbuildPath"
+          [System.Environment]::SetEnvironmentVariable("PATH", $env:PATH + ";$msbuildPath", [System.EnvironmentVariableTarget]::Process)
           Write-Host "MSBuild path added to PATH: $msbuildPath"
 
-      - name: Verify MSBuild Installation
+      - name: Verify MSBuild Installation Directory
         shell: pwsh
         run: |
-          msbuild /version
+          Get-ChildItem "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin"
+
+      - name: Verify MSBuild Version
+        shell: pwsh
+        run: |
+          & "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe" /version
 
       - name: Install Android SDK
         shell: pwsh
         run: |
           choco install -y android-sdk
-          $ANDROID_HOME = "C:\Android\android-sdk"
-          $env:ANDROID_HOME = $ANDROID_HOME
-          $env:PATH += ";$ANDROID_HOME\cmdline-tools\latest\bin;$ANDROID_HOME\platform-tools"
-          echo "y" | & "$ANDROID_HOME\cmdline-tools\latest\bin\sdkmanager.bat" --licenses
-          & "$ANDROID_HOME\cmdline-tools\latest\bin\sdkmanager.bat" "platform-tools" "build-tools;30.0.3" "platforms;android-30"
+          $env:ANDROID_HOME = "C:\Android\android-sdk"
+          $env:PATH += ";$env:ANDROID_HOME\cmdline-tools\latest\bin;$env:ANDROID_HOME\platform-tools"
+
+          echo "y" | & "$env:ANDROID_HOME\cmdline-tools\latest\bin\sdkmanager.bat" --licenses
+          & "$env:ANDROID_HOME\cmdline-tools\latest\bin\sdkmanager.bat" "platform-tools" "build-tools;30.0.3" "platforms;android-30"
 
       - name: Build Xamarin.Android APK
+        shell: pwsh
         run: |
-          msbuild MentalTest.Android/MentalTest.Android.csproj /t:PackageForAndroid /p:Configuration=Release /p:AndroidPackageFormat=apk
+          & "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe" MentalTest.Android/MentalTest.Android.csproj /t:PackageForAndroid /p:Configuration=Release /p:AndroidPackageFormat=apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v3
@@ -62,3 +69,4 @@ jobs:
         if: failure()
         run: |
           type C:\ProgramData\chocolatey\logs\chocolatey.log
+          dir C:\ProgramData\chocolatey\logs
