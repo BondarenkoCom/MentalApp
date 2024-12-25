@@ -19,13 +19,24 @@ jobs:
         with:
           dotnet-version: 6.0.x
 
-      - name: Install Visual Studio Build Tools and Workloads
+      - name: Install Visual Studio Build Tools
         run: |
           choco install -y visualstudio2019buildtools
-          choco install -y visualstudio2019-workload-vctools
-          choco install -y visualstudio2019-workload-netcoretools
-          choco install -y visualstudio2019-workload-xamarin
         shell: cmd
+
+      - name: Install Xamarin Workload Using Visual Studio Installer
+        shell: pwsh
+        run: |
+          $vsInstallerPath = "C:\Program Files (x86)\Microsoft Visual Studio\Installer"
+          if (Test-Path "$vsInstallerPath\vs_installer.exe") {
+              Start-Process "$vsInstallerPath\vs_installer.exe" `
+                -ArgumentList "--add Microsoft.VisualStudio.Workload.NetCrossPlat --quiet --wait" `
+                -NoNewWindow -Wait
+              Write-Host "Xamarin workload installed successfully."
+          } else {
+              Write-Host "Visual Studio Installer not found at: $vsInstallerPath"
+              exit 1
+          }
 
       - name: Add MSBuild to PATH
         shell: pwsh
@@ -34,12 +45,7 @@ jobs:
           [System.Environment]::SetEnvironmentVariable("PATH", $env:PATH + ";$msbuildPath", [System.EnvironmentVariableTarget]::Process)
           Write-Host "MSBuild path added to PATH: $msbuildPath"
 
-      - name: Verify MSBuild Installation Directory
-        shell: pwsh
-        run: |
-          Get-ChildItem "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin"
-
-      - name: Verify MSBuild Version
+      - name: Verify MSBuild Installation
         shell: pwsh
         run: |
           & "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe" /version
