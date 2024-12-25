@@ -33,22 +33,23 @@ jobs:
               exit 1
           }
 
-      - name: Set up MSBuild Path
+      - name: Locate MSBuild Path
         shell: pwsh
+        id: locate-msbuild
         run: |
-          $msbuildPath = "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin"
-          if (Test-Path $msbuildPath) {
-              [System.Environment]::SetEnvironmentVariable("PATH", $env:PATH + ";$msbuildPath", [System.EnvironmentVariableTarget]::Process)
-              Write-Host "MSBuild path added: $msbuildPath"
+          $msbuildPath = Get-ChildItem -Recurse "C:\Program Files (x86)\Microsoft Visual Studio\" -Filter "MSBuild.exe" | Select-Object -ExpandProperty FullName | Select-String "Bin\MSBuild.exe" -List
+          if ($msbuildPath) {
+              Write-Host "Found MSBuild at: $msbuildPath"
+              echo "::set-output name=msbuild-path::$msbuildPath"
           } else {
-              Write-Host "MSBuild path not found!"
+              Write-Host "MSBuild.exe not found!"
               exit 1
           }
 
       - name: Verify MSBuild Version
         shell: pwsh
         run: |
-          & "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe" /version
+          & "${{ steps.locate-msbuild.outputs.msbuild-path }}" /version
 
       - name: Install Android SDK
         shell: pwsh
@@ -62,7 +63,7 @@ jobs:
       - name: Build APK
         shell: pwsh
         run: |
-          & "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe" MentalTest.Android/MentalTest.Android.csproj `
+          & "${{ steps.locate-msbuild.outputs.msbuild-path }}" MentalTest.Android/MentalTest.Android.csproj `
             /t:PackageForAndroid `
             /p:Configuration=Release `
             /p:AndroidPackageFormat=apk
