@@ -65,6 +65,11 @@ jobs:
           echo "y" | & "$env:ANDROID_HOME\cmdline-tools\latest\bin\sdkmanager.bat" --licenses
           & "$env:ANDROID_HOME\cmdline-tools\latest\bin\sdkmanager.bat" "platform-tools" "build-tools;30.0.3" "platforms;android-30"
 
+      - name: Restore NuGet Packages
+        shell: pwsh
+        run: |
+          dotnet restore
+
       - name: Locate MSBuild Path with vswhere
         shell: pwsh
         id: locate-msbuild
