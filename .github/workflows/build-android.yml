@@ -33,20 +33,26 @@ jobs:
               exit 1
           }
 
-      - name: Locate MSBuild Path
+      - name: Install vswhere
+        shell: pwsh
+        run: |
+          choco install -y vswhere
+
+      - name: Locate MSBuild Path with vswhere
         shell: pwsh
         id: locate-msbuild
         run: |
-          $defaultPaths = @(
-              "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe",
-              "C:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe"
-          )
-          $msbuildPath = $defaultPaths | Where-Object { Test-Path $_ } | Select-Object -First 1
+          $vswherePath = "C:\ProgramData\chocolatey\bin\vswhere.exe"
+          if (-Not (Test-Path $vswherePath)) {
+              Write-Host "vswhere not found!"
+              exit 1
+          }
+          $msbuildPath = & $vswherePath -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
           if ($msbuildPath) {
               Write-Host "Found MSBuild at: $msbuildPath"
               echo "::set-output name=msbuild-path::$msbuildPath"
           } else {
-              Write-Host "MSBuild.exe not found in default paths!"
+              Write-Host "MSBuild.exe not found with vswhere!"
               exit 1
           }
 
