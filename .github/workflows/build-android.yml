@@ -59,15 +59,10 @@ jobs:
           echo "y" | & "$env:ANDROID_HOME\cmdline-tools\latest\bin\sdkmanager.bat" --licenses
           & "$env:ANDROID_HOME\cmdline-tools\latest\bin\sdkmanager.bat" "platforms;android-31" "build-tools;32.0.0"
 
-      - name: Clean Project
-        shell: pwsh
-        run: |
-          dotnet clean
-
       - name: Restore NuGet Packages
         shell: pwsh
         run: |
-          dotnet restore
+          msbuild "MentalTest.sln" /t:Restore /p:Configuration=Debug
 
       - name: Locate MSBuild Path with vswhere
         shell: pwsh
@@ -91,6 +86,11 @@ jobs:
         shell: pwsh
         run: |
           & "${{ steps.locate-msbuild.outputs.msbuild-path }}" /version
+
+      - name: Clean Project with MSBuild
+        shell: pwsh
+        run: |
+          & "${{ steps.locate-msbuild.outputs.msbuild-path }}" MentalTest.sln /t:Clean /p:Configuration=Debug
 
       - name: Build APK
         shell: pwsh
