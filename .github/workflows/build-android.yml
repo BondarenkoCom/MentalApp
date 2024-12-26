@@ -33,33 +33,26 @@ jobs:
               exit 1
           }
 
-      - name: Install vswhere
+      - name: Install JDK 11
         shell: pwsh
         run: |
-          choco install -y vswhere
-
-      - name: Locate MSBuild Path with vswhere
-        shell: pwsh
-        id: locate-msbuild
-        run: |
-          $vswherePath = "C:\ProgramData\chocolatey\bin\vswhere.exe"
-          if (-Not (Test-Path $vswherePath)) {
-              Write-Host "vswhere not found!"
-              exit 1
-          }
-          $msbuildPath = & $vswherePath -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
-          if ($msbuildPath) {
-              Write-Host "Found MSBuild at: $msbuildPath"
-              echo "::set-output name=msbuild-path::$msbuildPath"
+          choco install -y microsoft-openjdk11
+          $jdkPath = "C:\Program Files\Microsoft\jdk-11"
+          if (Test-Path $jdkPath) {
+              Write-Host "JDK 11 installed successfully at $jdkPath"
+              [System.Environment]::SetEnvironmentVariable("JAVA_HOME", $jdkPath, [System.EnvironmentVariableTarget]::Process)
+              $env:JAVA_HOME = $jdkPath
+              $env:PATH += ";$jdkPath\bin"
           } else {
-              Write-Host "MSBuild.exe not found with vswhere!"
+              Write-Host "JDK 11 installation failed!"
               exit 1
           }
 
-      - name: Verify MSBuild Version
+      - name: Verify JDK Version
         shell: pwsh
         run: |
-          & "${{ steps.locate-msbuild.outputs.msbuild-path }}" /version
+          java -version
+          javac -version
 
       - name: Install Android SDK
         shell: pwsh
