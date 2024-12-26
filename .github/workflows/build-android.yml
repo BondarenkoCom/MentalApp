@@ -37,12 +37,14 @@ jobs:
         shell: pwsh
         run: |
           choco install -y microsoft-openjdk11
-          $jdkPath = "C:\Program Files\Microsoft\jdk-11"
+          $jdkPath = "C:\Program Files\Microsoft\jdk-11.0.25.9-hotspot"
           if (Test-Path $jdkPath) {
               Write-Host "JDK 11 installed successfully at $jdkPath"
               [System.Environment]::SetEnvironmentVariable("JAVA_HOME", $jdkPath, [System.EnvironmentVariableTarget]::Process)
+              [System.Environment]::SetEnvironmentVariable("PATH", $env:PATH + ";$jdkPath\bin", [System.EnvironmentVariableTarget]::Process)
               $env:JAVA_HOME = $jdkPath
               $env:PATH += ";$jdkPath\bin"
+              java -version
           } else {
               Write-Host "JDK 11 installation failed!"
               exit 1
@@ -62,6 +64,29 @@ jobs:
           $env:PATH += ";$env:ANDROID_HOME\cmdline-tools\latest\bin;$env:ANDROID_HOME\platform-tools"
           echo "y" | & "$env:ANDROID_HOME\cmdline-tools\latest\bin\sdkmanager.bat" --licenses
           & "$env:ANDROID_HOME\cmdline-tools\latest\bin\sdkmanager.bat" "platform-tools" "build-tools;30.0.3" "platforms;android-30"
+
+      - name: Locate MSBuild Path with vswhere
+        shell: pwsh
+        id: locate-msbuild
+        run: |
+          $vswherePath = "C:\ProgramData\chocolatey\bin\vswhere.exe"
+          if (-Not (Test-Path $vswherePath)) {
+              Write-Host "vswhere not found!"
+              exit 1
+          }
+          $msbuildPath = & $vswherePath -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
+          if ($msbuildPath) {
+              Write-Host "Found MSBuild at: $msbuildPath"
+              echo "::set-output name=msbuild-path::$msbuildPath"
+          } else {
+              Write-Host "MSBuild.exe not found with vswhere!"
+              exit 1
+          }
+
+      - name: Verify MSBuild Version
+        shell: pwsh
+        run: |
+          & "${{ steps.locate-msbuild.outputs.msbuild-path }}" /version
 
       - name: Build APK
         shell: pwsh
