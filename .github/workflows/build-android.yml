@@ -59,11 +59,6 @@ jobs:
           echo "y" | & "$env:ANDROID_HOME\cmdline-tools\latest\bin\sdkmanager.bat" --licenses
           & "$env:ANDROID_HOME\cmdline-tools\latest\bin\sdkmanager.bat" "platforms;android-31" "build-tools;32.0.0"
 
-      - name: Restore NuGet Packages
-        shell: pwsh
-        run: |
-          msbuild "MentalTest.sln" /t:Restore /p:Configuration=Debug
-
       - name: Locate MSBuild Path with vswhere
         shell: pwsh
         id: locate-msbuild
@@ -81,6 +76,11 @@ jobs:
               Write-Host "MSBuild.exe not found with vswhere!"
               exit 1
           }
+
+      - name: Restore NuGet Packages
+        shell: pwsh
+        run: |
+          & "${{ steps.locate-msbuild.outputs.msbuild-path }}" MentalTest.sln /t:Restore /p:Configuration=Debug
 
       - name: Verify MSBuild Version
         shell: pwsh
