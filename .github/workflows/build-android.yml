@@ -25,7 +25,7 @@ jobs:
           $vsInstallerPath = "C:\Program Files (x86)\Microsoft Visual Studio\Installer"
           if (Test-Path "$vsInstallerPath\vs_installer.exe") {
               Start-Process "$vsInstallerPath\vs_installer.exe" `
-                -ArgumentList "--add Microsoft.VisualStudio.Workload.NetCrossPlat --add Microsoft.VisualStudio.Workload.NetCoreBuildTools --add Microsoft.ComponentGroup.UWP.Xamarin --quiet --wait" `
+                -ArgumentList "--add Microsoft.VisualStudio.Workload.NetCrossPlat --add Microsoft.VisualStudio.Workload.NetCoreBuildTools --add Microsoft.VisualStudio.Workload.NetNative --add Microsoft.Component.Xamarin --quiet --wait" `
                 -NoNewWindow -Wait
               Write-Host "Visual Studio workloads for Xamarin installed successfully."
           } else {
@@ -49,12 +49,6 @@ jobs:
               Write-Host "JDK 11 installation failed!"
               exit 1
           }
-
-      - name: Verify JDK Version
-        shell: pwsh
-        run: |
-          java -version
-          javac -version
 
       - name: Install Android SDK
         shell: pwsh
@@ -84,7 +78,7 @@ jobs:
               Write-Host "vswhere not found!"
               exit 1
           }
-          $msbuildPath = & $vswherePath -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
+          $msbuildPath = & $vswherePath -latest -products * -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
           if ($msbuildPath) {
               Write-Host "Found MSBuild at: $msbuildPath"
               echo "::set-output name=msbuild-path::$msbuildPath"
