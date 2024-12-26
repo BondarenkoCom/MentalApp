@@ -63,7 +63,12 @@ jobs:
           $env:ANDROID_HOME = "C:\Android\android-sdk"
           $env:PATH += ";$env:ANDROID_HOME\cmdline-tools\latest\bin;$env:ANDROID_HOME\platform-tools"
           echo "y" | & "$env:ANDROID_HOME\cmdline-tools\latest\bin\sdkmanager.bat" --licenses
-          & "$env:ANDROID_HOME\cmdline-tools\latest\bin\sdkmanager.bat" "platform-tools" "build-tools;30.0.3" "platforms;android-30"
+          & "$env:ANDROID_HOME\cmdline-tools\latest\bin\sdkmanager.bat" "platforms;android-31" "build-tools;32.0.0"
+
+      - name: Clean Project
+        shell: pwsh
+        run: |
+          dotnet clean
 
       - name: Restore NuGet Packages
         shell: pwsh

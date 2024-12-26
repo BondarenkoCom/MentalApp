@@ -1,23 +1,19 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<!-- Define MainTheme.Base -->
 	<style name="MainTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
-		<!-- Customize your theme here -->
-		<item name="colorPrimary">@android:color/holo_blue_dark</item>
-		<item name="colorPrimaryDark">@android:color/holo_blue_light</item>
-		<item name="colorAccent">@android:color/holo_orange_light</item>
+		<item name="colorPrimary">@color/colorPrimary</item>
+		<item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+		<item name="colorAccent">@color/colorAccent</item>
 		<item name="android:colorActivatedHighlight">@android:color/transparent</item>
 		<item name="android:listSelector">@android:color/transparent</item>
 	</style>
 
-	<!-- Define MainTheme -->
 	<style name="MainTheme" parent="MainTheme.Base">
 		<item name="android:colorActivatedHighlight">@android:color/transparent</item>
 		<item name="android:listSelector">@android:color/transparent</item>
 	</style>
 
-	<!-- Define CustomListViewStyle -->
 	<style name="CustomListViewStyle">
 		<item name="android:listSelector">@android:color/transparent</item>
 	</style>
