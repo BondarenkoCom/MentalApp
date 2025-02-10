@@ -37,8 +37,8 @@ jobs:
         shell: pwsh
         run: |
           choco install -y microsoft-openjdk11
-          $jdkPath = "C:\Program Files\Microsoft\jdk-11.0.25.9-hotspot"
-          if (Test-Path $jdkPath) {
+          $jdkPath = Get-ChildItem "C:\Program Files\Microsoft" -Directory | Where-Object { $_.Name -match "jdk-11" } | Select-Object -ExpandProperty FullName
+          if ($jdkPath) {
               Write-Host "JDK 11 installed successfully at $jdkPath"
               [System.Environment]::SetEnvironmentVariable("JAVA_HOME", $jdkPath, [System.EnvironmentVariableTarget]::Process)
               [System.Environment]::SetEnvironmentVariable("PATH", $env:PATH + ";$jdkPath\bin", [System.EnvironmentVariableTarget]::Process)
