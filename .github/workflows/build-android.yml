@@ -1,4 +1,4 @@
-name: Build Xamarin.Android APK
+name: Build Xamarin.Android APK (Universal)
 
 on:
   push:
@@ -92,15 +92,19 @@ jobs:
         run: |
           & "${{ steps.locate-msbuild.outputs.msbuild-path }}" MentalTest.sln /t:Clean /p:Configuration=Debug
 
-      - name: Build APK
+      - name: Build Universal APKs
         shell: pwsh
         run: |
           & "${{ steps.locate-msbuild.outputs.msbuild-path }}" MentalTest.Android/MentalTest.Android.csproj `
             /t:PackageForAndroid `
             /p:Configuration=Release `
-            /p:AndroidPackageFormat=apk
+            /p:AndroidPackageFormat=apk `
+            /p:AndroidCreatePackagePerAbi=true `
+            /p:AndroidSupportedAbis="arm64-v8a,armeabi-v7a,x86,x86_64" `
+            /p:TargetFrameworkVersion=v10.0 `
+            /p:AndroidUseLatestPlatformSdk=false
 
-      - name: Upload APK
+      - name: Upload APKs
         uses: actions/upload-artifact@v4
         with:
           name: app-release
