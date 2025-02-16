@@ -14,52 +14,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup .NET SDK
+      - name: Setup .NET SDK (7.0.x)
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 6.0.x
+          dotnet-version: 7.0.x
 
-      - name: Install Visual Studio with Xamarin Workloads
+      - name: Check Installed Visual Studio
         shell: pwsh
         run: |
-          $vsInstallerPath = "C:\Program Files (x86)\Microsoft Visual Studio\Installer"
-          if (Test-Path "$vsInstallerPath\vs_installer.exe") {
-              Start-Process "$vsInstallerPath\vs_installer.exe" `
-                -ArgumentList "--add Microsoft.VisualStudio.Workload.NetCrossPlat --add Microsoft.VisualStudio.Workload.NetCoreBuildTools --add Microsoft.VisualStudio.Workload.NetNative --add Microsoft.Component.Xamarin --quiet --wait" `
-                -NoNewWindow -Wait
-              Write-Host "Visual Studio workloads for Xamarin installed successfully."
-          } else {
-              Write-Host "Visual Studio Installer not found!"
-              exit 1
-          }
+          Get-ChildItem "C:\Program Files\Microsoft Visual Studio\2022"
 
-      - name: Install JDK 11
-        shell: pwsh
-        run: |
-          choco install -y microsoft-openjdk11
-          $jdkPath = Get-ChildItem "C:\Program Files\Microsoft" -Directory | Where-Object { $_.Name -match "jdk-11" } | Select-Object -ExpandProperty FullName
-          if ($jdkPath) {
-              Write-Host "JDK 11 installed successfully at $jdkPath"
-              [System.Environment]::SetEnvironmentVariable("JAVA_HOME", $jdkPath, [System.EnvironmentVariableTarget]::Process)
-              [System.Environment]::SetEnvironmentVariable("PATH", $env:PATH + ";$jdkPath\bin", [System.EnvironmentVariableTarget]::Process)
-              $env:JAVA_HOME = $jdkPath
-              $env:PATH += ";$jdkPath\bin"
-              java -version
-          } else {
-              Write-Host "JDK 11 installation failed!"
-              exit 1
-          }
-
-      - name: Install Android SDK
-        shell: pwsh
-        run: |
-          choco install -y android-sdk
-          $env:ANDROID_HOME = "C:\Android\android-sdk"
-          $env:PATH += ";$env:ANDROID_HOME\cmdline-tools\latest\bin;$env:ANDROID_HOME\platform-tools"
-          echo "y" | & "$env:ANDROID_HOME\cmdline-tools\latest\bin\sdkmanager.bat" --licenses
-          & "$env:ANDROID_HOME\cmdline-tools\latest\bin\sdkmanager.bat" "platforms;android-31" "build-tools;32.0.0"
-
-      - name: Locate MSBuild Path with vswhere
+      - name: Locate MSBuild Path
         shell: pwsh
         id: locate-msbuild
         run: |
@@ -80,17 +45,12 @@ jobs:
       - name: Restore NuGet Packages
         shell: pwsh
         run: |
-          & "${{ steps.locate-msbuild.outputs.msbuild-path }}" MentalTest.sln /t:Restore /p:Configuration=Debug
+          & "${{ steps.locate-msbuild.outputs.msbuild-path }}" MentalTest.sln /t:Restore /p:Configuration=Release
 
-      - name: Verify MSBuild Version
+      - name: Clean Project
         shell: pwsh
         run: |
-          & "${{ steps.locate-msbuild.outputs.msbuild-path }}" /version
-
-      - name: Clean Project with MSBuild
-        shell: pwsh
-        run: |
-          & "${{ steps.locate-msbuild.outputs.msbuild-path }}" MentalTest.sln /t:Clean /p:Configuration=Debug
+          & "${{ steps.locate-msbuild.outputs.msbuild-path }}" MentalTest.sln /t:Clean /p:Configuration=Release
 
       - name: Build Universal APKs
         shell: pwsh
@@ -100,9 +60,9 @@ jobs:
             /p:Configuration=Release `
             /p:AndroidPackageFormat=apk `
             /p:AndroidCreatePackagePerAbi=true `
-            /p:AndroidSupportedAbis="arm64-v8a;armeabi-v7a;x86;x86_64" `
+            /p:AndroidSupportedAbis="arm64-v8a,armeabi-v7a,x86,x86_64" `
             /p:TargetFrameworkVersion=v10.0 `
-            /p:AndroidUseLatestPlatformSdk=false
+            /p:AndroidUseLatestPlatformSdk=true
 
       - name: Upload APKs
         uses: actions/upload-artifact@v4
