@@ -55,12 +55,12 @@ jobs:
       - name: Build Universal APKs
         shell: pwsh
         run: |
-          & "${{ steps.locate-msbuild.outputs.msbuild-path }}" MentalTest.Android/MentalTest.Android.csproj `
+          & "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\MSBuild.exe" MentalTest.Android/MentalTest.Android.csproj `
             /t:PackageForAndroid `
             /p:Configuration=Release `
             /p:AndroidPackageFormat=apk `
             /p:AndroidCreatePackagePerAbi=true `
-            /p:AndroidSupportedAbis="arm64-v8a,armeabi-v7a,x86,x86_64" `
+            "/p:AndroidSupportedAbis=arm64-v8a,armeabi-v7a,x86,x86_64" `
             /p:TargetFrameworkVersion=v10.0 `
             /p:AndroidUseLatestPlatformSdk=true
 
